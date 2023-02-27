@@ -1,4 +1,5 @@
 import 'package:app_mobile_doan/core/app_export.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:multiselect/multiselect.dart';
 
@@ -12,6 +13,7 @@ class AttendanceScreen extends StatefulWidget {
 class AttendanceState extends State<AttendanceScreen> {
   @override
   Widget build(BuildContext context) {
+    CollectionReference users = FirebaseFirestore.instance.collection('User');
     return Container(
       height: Get.height,
       width: Get.width,
@@ -66,47 +68,59 @@ class AttendanceState extends State<AttendanceScreen> {
                                       ),
                                       Expanded(
                                         flex: 9,
-                                        child: ListView.builder(
-                                          itemCount: 2,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              margin: EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(color: Colors.black),
-                                                  borderRadius: BorderRadius.circular(8.0)),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    flex: 2,
-                                                    child: Container(
-                                                      padding: EdgeInsets.all(20),
-                                                      child: Icon(
-                                                        Icons.people,
-                                                        size: 30,
+                                        child:StreamBuilder<QuerySnapshot>(
+                                          stream: users.snapshots(),
+                                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                            if (snapshot.hasError) {
+                                              return Text('Something went wrong');
+                                            }
+
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return Text("Loading");
+                                            }
+
+                                            return new ListView(
+                                              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                                                return Container(
+                                                margin: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(color: Colors.black),
+                                                    borderRadius: BorderRadius.circular(8.0)),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(20),
+                                                        child: Icon(
+                                                          Icons.people,
+                                                          size: 30,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 8,
-                                                    child: Container(
-                                                      padding: EdgeInsets.all(5),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Text("Họ tên : Nguyễn Huy Hoàng"),
-                                                          Text("Mã số sinh viên : 1874802010013"),
-                                                          Text("Thời gian vào : 7:30'"),
-                                                          Text("Thời gian ra : 11:40'")
-                                                        ],
+                                                    Expanded(
+                                                      flex: 8,
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(5),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Text("Họ tên : ${(document.data() as Map)["TenSV"].toString()}"),
+                                                            Text("Mã số sinh viên : ${(document.data() as Map)["MaSV"].toString()}"),
+                                                            Text("Thời gian vào : 7:30'"),
+                                                            Text("Thời gian ra : 11:40'")
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                              }).toList(),
                                             );
                                           },
-                                        ),
+                                        )
                                       )
                                     ],
                                   ),
@@ -121,47 +135,59 @@ class AttendanceState extends State<AttendanceScreen> {
           ),
           Expanded(
             flex: 7,
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(8.0)),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          padding: EdgeInsets.all(20),
-                          child: Icon(
-                            Icons.people,
-                            size: 30,
+            child:StreamBuilder<QuerySnapshot>(
+              stream: users.snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text("Loading");
+                }
+
+                return new ListView(
+                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                    return Container(
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: EdgeInsets.all(20),
+                            child: Icon(
+                              Icons.people,
+                              size: 30,
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 8,
-                        child: Container(
-                          padding: EdgeInsets.all(5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text("Họ tên : Nguyễn Huy Hoàng"),
-                              Text("Mã số sinh viên : 1874802010013"),
-                              Text("Thời gian vào : 7:30'"),
-                              Text("Thời gian ra : 11:40'")
-                            ],
+                        Expanded(
+                          flex: 8,
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("Họ tên : ${(document.data() as Map)["TenSV"].toString()}"),
+                                Text("Mã số sinh viên : ${(document.data() as Map)["MaSV"].toString()}"),
+                                Text("Thời gian vào : 7:30'"),
+                                Text("Thời gian ra : 11:40'")
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
+                        )
+                      ],
+                    ),
+                  );
+                  }).toList(),
                 );
               },
-            ),
+            )
           )
         ],
       ),

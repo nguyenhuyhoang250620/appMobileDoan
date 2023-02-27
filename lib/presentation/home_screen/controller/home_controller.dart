@@ -7,6 +7,7 @@ class HomeController extends GetxController {
   RxInt selectedIndex = 0.obs;
   final firestoreInstance = FirebaseFirestore.instance;
   List<User> getEmployeeUser = <User>[].obs;
+  var MaSV = "".obs;
   @override
   void onInit() {
     listenToDocumentChanges();
@@ -23,9 +24,10 @@ class HomeController extends GetxController {
   void onClose() {
     super.onClose();
   }
-  Future<void> getUserData()async{
+
+  Future<void> getUserData() async {
     CollectionReference collectionReference =
-    firestoreInstance.collection("User");
+        firestoreInstance.collection("User");
     QuerySnapshot querySnapshot = await collectionReference.get();
     List<DocumentSnapshot> documents = querySnapshot.docs;
     documents.forEach((document) {
@@ -34,6 +36,7 @@ class HomeController extends GetxController {
       getEmployeeUser.add(user);
     });
   }
+
   void listenToDocumentChanges() {
     firestoreInstance
         .collection("User")

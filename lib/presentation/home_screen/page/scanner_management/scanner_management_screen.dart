@@ -1,9 +1,10 @@
 import 'package:app_mobile_doan/core/app_export.dart';
 import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:multiselect/multiselect.dart';
 
+import 'flutter_barcode.dart';
 
 // import 'flutter_barcode_scanner.dart';
 
@@ -23,13 +24,15 @@ class ScannerState extends State<ScannerScreen> {
     super.initState();
   }
 
-   Future<void> startBarcodeScanStream() async {
-      FlutterBarcodeScanner.getBarcodeStreamReceiver(
-          '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-          .listen((barcode){
-            print('HoangNH: $barcode');
-          });
-    }
+  Future<void> startBarcodeScanStream() async {
+    FlutterBarcodeScanner.scanBarcode(
+            '#ff6666', 'Cancel', true, ScanMode.DEFAULT)
+        .timeout(Duration(milliseconds: 100))
+        .then((value) {
+      print(value);
+    });
+  }
+
   List<String> list = ["1", "2", "3"];
 
   @override
@@ -92,21 +95,31 @@ class ScannerState extends State<ScannerScreen> {
               children: <Widget>[
                 ...List.generate(10, (index) {
                   return InkWell(
-                    onTap: (){
-                      // startBarcodeScanStream();
+                    onTap: () {
+                      if (index == 0) {
+                        startBarcodeScanStream();
+                      }
+                      if (index == 1) {}
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(8.0)
-                      ),
+                          color: Colors.black.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(8.0)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Align(alignment: Alignment.topCenter,child: Text("Phòng $index",style: AppStyle.txtInterMedium14.copyWith(color: Colors.white),)),
-                          Text("Tòa B1",style: AppStyle.txtInterMedium14.copyWith(color: Colors.white)),
+                          Align(
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                "Phòng $index",
+                                style: AppStyle.txtInterMedium14
+                                    .copyWith(color: Colors.white),
+                              )),
+                          Text("Tòa B1",
+                              style: AppStyle.txtInterMedium14
+                                  .copyWith(color: Colors.white)),
                         ],
                       ),
                     ),
