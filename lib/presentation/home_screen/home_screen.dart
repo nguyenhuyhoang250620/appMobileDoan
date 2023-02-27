@@ -14,11 +14,15 @@ class HomeScreen extends GetWidget<HomeController> {
           backgroundColor: ColorConstant.whiteA700,
           body: Obx(() {
             if (controller.selectedIndex.value == 0) {
-              return ScannerScreen();
+              return ScannerScreen(
+                homeController: controller,
+              );
             } else if (controller.selectedIndex.value == 1) {
               return AttendanceScreen();
             } else if (controller.selectedIndex.value == 2) {
-              return SystemScreen();
+              return SystemScreen(
+                controller: controller,
+              );
             }
             return Container(
               color: Colors.blue,

@@ -1,13 +1,16 @@
 import 'package:app_mobile_doan/core/app_export.dart';
+import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:multiselect/multiselect.dart';
 
-import 'flutter_barcode_scanner.dart';
 
 // import 'flutter_barcode_scanner.dart';
 
 class ScannerScreen extends StatefulWidget {
+  ScannerScreen({required this.homeController});
   @override
+  final HomeController homeController;
   State<StatefulWidget> createState() {
     return ScannerState();
   }
@@ -20,12 +23,13 @@ class ScannerState extends State<ScannerScreen> {
     super.initState();
   }
 
-  Future<void> startBarcodeScanStream() async {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-        .listen((barcode) => print(barcode));
-  }
-
+   Future<void> startBarcodeScanStream() async {
+      FlutterBarcodeScanner.getBarcodeStreamReceiver(
+          '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
+          .listen((barcode){
+            print('HoangNH: $barcode');
+          });
+    }
   List<String> list = ["1", "2", "3"];
 
   @override
@@ -59,7 +63,7 @@ class ScannerState extends State<ScannerScreen> {
                     border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.circular(8.0)),
                 child: DropDownMultiSelect(
-                  icon: Icon(Icons.barcode_reader),
+                  icon: Icon(Icons.scanner),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     filled: false,
@@ -87,57 +91,27 @@ class ScannerState extends State<ScannerScreen> {
               crossAxisCount: 2,
               children: <Widget>[
                 ...List.generate(10, (index) {
-                  return Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(8.0)
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Align(alignment: Alignment.topCenter,child: Text("Phòng $index",style: AppStyle.txtInterMedium14.copyWith(color: Colors.white),)),
-                        Text("Tòa B1",style: AppStyle.txtInterMedium14.copyWith(color: Colors.white)),
-                      ],
+                  return InkWell(
+                    onTap: (){
+                      // startBarcodeScanStream();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(8.0)
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Align(alignment: Alignment.topCenter,child: Text("Phòng $index",style: AppStyle.txtInterMedium14.copyWith(color: Colors.white),)),
+                          Text("Tòa B1",style: AppStyle.txtInterMedium14.copyWith(color: Colors.white)),
+                        ],
+                      ),
                     ),
                   );
                 })
-                // InkWell(
-                //   onTap: () {
-                //     startBarcodeScanStream();
-                //   },
-                //   child: Container(
-                //     padding: const EdgeInsets.all(8),
-                //     color: Colors.teal[100],
-                //     child: const Text("He'd have you all unravel at the"),
-                //   ),
-                // ),
-                // Container(
-                //   padding: const EdgeInsets.all(8),
-                //   color: Colors.teal[200],
-                //   child: const Text('Heed not the rabble'),
-                // ),
-                // Container(
-                //   padding: const EdgeInsets.all(8),
-                //   color: Colors.teal[300],
-                //   child: const Text('Sound of screams but the'),
-                // ),
-                // Container(
-                //   padding: const EdgeInsets.all(8),
-                //   color: Colors.teal[400],
-                //   child: const Text('Who scream'),
-                // ),
-                // Container(
-                //   padding: const EdgeInsets.all(8),
-                //   color: Colors.teal[500],
-                //   child: const Text('Revolution is coming...'),
-                // ),
-                // Container(
-                //   padding: const EdgeInsets.all(8),
-                //   color: Colors.teal[600],
-                //   child: const Text('Revolution, they...'),
-                // ),
               ],
             ),
           )

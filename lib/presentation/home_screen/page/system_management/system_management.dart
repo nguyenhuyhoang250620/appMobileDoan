@@ -1,9 +1,12 @@
 import 'package:app_mobile_doan/core/app_export.dart';
+import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:multiselect/multiselect.dart';
 
 class SystemScreen extends StatefulWidget {
+  SystemScreen({required this.controller});
   @override
+  final HomeController controller;
   State<StatefulWidget> createState() {
     return SystemState();
   }
@@ -62,7 +65,7 @@ class SystemState extends State<SystemScreen> {
           Expanded(
             flex: 7,
             child: ListView.builder(
-              itemCount: 10,
+              itemCount: widget.controller.getEmployeeUser.length,
               itemBuilder: (context, index) {
                 return Container(
                   margin: EdgeInsets.all(10),
@@ -89,8 +92,8 @@ class SystemState extends State<SystemScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text("Họ tên : Nguyễn Huy Hoàng"),
-                              Text("Mã số sinh viên : 1874802010013"),
+                              Text("Họ tên : ${widget.controller.getEmployeeUser[index].TenSV}"),
+                              Text("Mã số sinh viên : ${widget.controller.getEmployeeUser[index].MaSV}"),
                               Text("Thời gian vào : 7:30'"),
                               Text("Thời gian ra : 11:40'")
                             ],
