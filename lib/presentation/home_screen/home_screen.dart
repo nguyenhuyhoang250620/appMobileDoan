@@ -1,5 +1,6 @@
 import 'package:app_mobile_doan/presentation/home_screen/page/attendance%20management/attendance_management_screen.dart';
 import 'package:app_mobile_doan/presentation/home_screen/page/scanner_management/scanner_management_screen.dart';
+import 'package:app_mobile_doan/presentation/home_screen/page/settings/settings.dart';
 import 'package:app_mobile_doan/presentation/home_screen/page/system_management/system_management.dart';
 
 import 'controller/home_controller.dart';
@@ -24,9 +25,7 @@ class HomeScreen extends GetWidget<HomeController> {
                 controller: controller,
               );
             }
-            return Container(
-              color: Colors.blue,
-            );
+            return SettingManagement();
           }),
           bottomNavigationBar: Obx(
             () => BottomNavigationBar(

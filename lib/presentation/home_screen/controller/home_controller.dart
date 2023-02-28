@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:app_mobile_doan/presentation/home_screen/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import '/core/app_export.dart';
 
@@ -8,6 +11,9 @@ class HomeController extends GetxController {
   final firestoreInstance = FirebaseFirestore.instance;
   List<User> getEmployeeUser = <User>[].obs;
   var MaSV = "".obs;
+  var test = false.obs;
+  var test1 = false.obs;
+  Uint8List? image;
   @override
   void onInit() {
     listenToDocumentChanges();
@@ -37,6 +43,15 @@ class HomeController extends GetxController {
     });
   }
 
+  Future<void> startBarcodeScanStream() async {
+    FlutterBarcodeScanner.getBarcodeStreamReceiver(
+            '#ff6666', 'Cancel', true, ScanMode.DEFAULT)!
+        .listen((event) {
+      print(event);
+    });
+  }
+  
+
   void listenToDocumentChanges() {
     firestoreInstance
         .collection("User")
@@ -44,8 +59,11 @@ class HomeController extends GetxController {
         .snapshots()
         .listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        print("Document data: ${documentSnapshot.data()}");
-        print('HoangNH: ');
+        if ((documentSnapshot.data() as Map)['GioiTinh'] == 'true') {
+          test.value = true;
+        } else {
+          test.value = false;
+        }
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {
         print("Document does not exist on the database");
