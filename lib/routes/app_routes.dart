@@ -10,7 +10,7 @@ class AppRoutes {
 
   static String homeScreen = '/home_screen';
 
-  static String initialRoute = '/home_screen';
+  static String initialRoute = '/login_screen';
 
   static List<GetPage> pages = [
     GetPage(

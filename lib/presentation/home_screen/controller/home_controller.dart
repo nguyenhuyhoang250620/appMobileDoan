@@ -55,7 +55,7 @@ class HomeController extends GetxController {
   void listenToDocumentChanges() {
     firestoreInstance
         .collection("User")
-        .doc("187480201001a3")
+        .doc("132")
         .snapshots()
         .listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {

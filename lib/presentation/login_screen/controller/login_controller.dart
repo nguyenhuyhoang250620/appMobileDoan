@@ -1,14 +1,16 @@
-import 'package:flutter/cupertino.dart';
-
+import 'package:flutter/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '/core/app_export.dart';
 
 class LoginController extends GetxController {
+  late TextEditingController emailController = TextEditingController();
+  late TextEditingController emailControllerForgot = TextEditingController();
+  late TextEditingController passwordController = TextEditingController();
+  FocusNode usernameFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
 
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  var obscureText = true.obs;
 
-  
   @override
   void onReady() {
     super.onReady();
@@ -18,4 +20,23 @@ class LoginController extends GetxController {
   void onClose() {
     super.onClose();
   }
+
+  Future<void> onLogin(String email, String password) async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      Get.offAndToNamed(AppRoutes.homeScreen);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
+  }
 }
+
+void forgetPassword(String email) {}

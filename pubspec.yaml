@@ -42,6 +42,8 @@ dependencies:
   cloud_firestore: ^4.4.3
   flutter_barcode_scanner: ^2.0.0
   ai_barcode_scanner: ^0.0.4
+  play_kit: ^0.0.2
+  firebase_auth: ^4.2.9
 dev_dependencies: 
   flutter_test: 
     sdk: flutter
