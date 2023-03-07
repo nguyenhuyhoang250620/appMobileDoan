@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '/core/app_export.dart';
 
 class LoginController extends GetxController {
@@ -10,6 +11,12 @@ class LoginController extends GetxController {
   FocusNode passwordFocusNode = FocusNode();
 
   var obscureText = true.obs;
+  var isAdmin = "tennguoidungoccho@gmail.com".obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
 
   @override
   void onReady() {
@@ -28,7 +35,11 @@ class LoginController extends GetxController {
         email: email,
         password: password,
       );
-      Get.offAndToNamed(AppRoutes.homeScreen);
+      if (isAdmin == userCredential.user!.email) {
+        Get.offAndToNamed(AppRoutes.diviceScreen);
+      } else {
+        Get.offAndToNamed(AppRoutes.homeScreen);
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');

@@ -44,6 +44,9 @@ dependencies:
   ai_barcode_scanner: ^0.0.4
   play_kit: ^0.0.2
   firebase_auth: ^4.2.9
+  simple_animations: ^4.1.0
+  pin_code_fields: ^7.4.0
+  supercharged: ^2.1.1
 dev_dependencies: 
   flutter_test: 
     sdk: flutter

@@ -1,4 +1,6 @@
 
+import 'package:app_mobile_doan/presentation/divice_screen/binding/divice_binding.dart';
+import 'package:app_mobile_doan/presentation/divice_screen/divice_screen.dart';
 import 'package:app_mobile_doan/presentation/home_screen/home_screen.dart';
 import 'package:app_mobile_doan/presentation/home_screen/binding/home_binding.dart';
 import 'package:get/get.dart';
@@ -10,7 +12,9 @@ class AppRoutes {
 
   static String homeScreen = '/home_screen';
 
-  static String initialRoute = '/login_screen';
+  static String diviceScreen = '/divice_screen';
+
+  static String initialRoute = '/divice_screen';
 
   static List<GetPage> pages = [
     GetPage(
@@ -18,6 +22,13 @@ class AppRoutes {
       page: () => LoginScreen(),
       bindings: [
         LoginBinding(),
+      ],
+    ),
+     GetPage(
+      name: diviceScreen,
+      page: () => DiviceScreen(),
+      bindings: [
+        DiviceBinding(),
       ],
     ),
     GetPage(
