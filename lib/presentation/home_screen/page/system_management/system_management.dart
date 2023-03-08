@@ -1,4 +1,5 @@
 import 'package:app_mobile_doan/core/app_export.dart';
+import 'package:app_mobile_doan/core/utils/constants.dart';
 import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:multiselect/multiselect.dart';
@@ -29,7 +30,7 @@ class SystemState extends State<SystemScreen> {
               padding: EdgeInsets.all(20),
               child: Text(
                 "Hệ thống quản lí sinh viên",
-                style: AppStyle.titleTopPage,
+                style: AppStyle.titleTopPage.copyWith(color: darkTextColor),
               ),
             ),
           ),

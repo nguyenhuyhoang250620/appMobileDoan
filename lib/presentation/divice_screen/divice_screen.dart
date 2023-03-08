@@ -40,7 +40,6 @@ class _DiviceState extends State<DiviceScreen> {
                         ? AiBarcodeScanner(
                             validateText: '',
                             onScannerStarted: (p0) {
-                              print("dasdsadddddddddddddddddddddddddddddd");
                             }, // link to be validated
                             validateType: ValidateType.contains,
                             // canPop: true,
@@ -60,9 +59,9 @@ class _DiviceState extends State<DiviceScreen> {
                               // color.value = "2";
                               // controller.test1.value = false;
 
-                              // Future.delayed(Duration(milliseconds: 2500), () {
-                              //   controller.test1.value = true;
-                              // });
+                              Future.delayed(Duration(milliseconds: 2500), () {
+                                controller.test1.value = true;
+                              });
                             },
                             onDetect: (p0) {
                               if(controller.MaSV.isNotEmpty){
