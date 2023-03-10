@@ -19,40 +19,66 @@ class SettingManagement extends StatefulWidget {
 class _SettingState extends State<SettingManagement> {
   @override
   void initState() {
-    print('HoangNH: ${controller.uniqueDevices.length}');
     super.initState();
   }
-  String barcode = 'Tap  to scan';
-  var color = "1".obs;
-  final controller = Get.find<DiviceController>();
+  List<dynamic> test = [
+    {
+       "sv":[
+        {
+            "ten":"hoang"
+        }
+       ],
+       "phong":{
+            "tenphong":"phonga"
+       },
+       "mon":{
+            "tenmon":"tenmon"
+       },
+       "thoigian":{
+            "tenca":"tenca"
+       },
+       "giangvien":{
+            "tengv":"tengv"
+       },
+       "phongban":{
+            "tenphong":"tenphong"
+       }
+    }
+];
+final controller = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(' Scanner'),
+        title: const Text(' Scannsser'),
       ),
       body: ListView.builder(
-        itemCount: controller.uniqueDevices.length,
+        itemCount: test.length,
         itemBuilder: (context, index) {
-          return Obx(() => Container(
-            child:  Row(
-              children: [
-                Text(
-                    'sasaSASAS${controller.uniqueDevices.value[index].title}'),
-                Container(
-                  height: 30,
-                  width: 30,
-                  child: Transform.rotate(
-                    angle: pi / 2,
-                    child: Image.memory(
-                        filterQuality: FilterQuality.high,
-                        controller
-                            .uniqueDevices.value[index].value),
-                  ),
-                )
-              ],
-            )
-          ),);
+            var sv = test[index]["sv"];
+            var phong = test[index]["phong"]['tenphong'];
+            var mon = test[index]["mon"]['tenmon'];
+            var thoigian = test[index]["thoigian"]['tenca'];
+            var giangvien = test[index]["giangvien"]['tengv'];
+            var phongban = test[index]["phongban"]['tenphong'];
+          return Column(
+            children: [
+              Text("Tên phòng1: $sv"),
+              SizedBox(height: 20,),
+              Text("Tên phòng2: $phong"),
+              SizedBox(height: 20,),
+              Text("Tên phòng3: $mon"),
+              SizedBox(height: 20,),
+              Text("Tên phòng4: $thoigian"),
+              SizedBox(height: 20,),
+              Text("Tên phòng4: $giangvien"),
+              SizedBox(height: 20,),
+              Text("Tên phòng4: $phongban"),
+              TextButton(onPressed: () {
+                controller.addData();
+              }, child: Text("cliock"))
+            ],
+          );
         },
       )
     );

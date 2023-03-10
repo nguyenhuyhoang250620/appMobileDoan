@@ -98,7 +98,9 @@ class ScannerState extends State<ScannerScreen> {
                       if (index == 0) {
                         startBarcodeScanStream();
                       }
-                      if (index == 1) {}
+                      if (index == 1) {
+                        Get.offAndToNamed(AppRoutes.diviceScreen);
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),

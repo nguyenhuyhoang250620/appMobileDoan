@@ -9,6 +9,7 @@ import '/core/app_export.dart';
 class HomeController extends GetxController {
   RxInt selectedIndex = 0.obs;
   final firestoreInstance = FirebaseFirestore.instance;
+  CollectionReference phongHocCollection = FirebaseFirestore.instance.collection('Config');
   List<User> getEmployeeUser = <User>[].obs;
   var MaSV = "".obs;
   var test = false.obs;
@@ -70,4 +71,36 @@ class HomeController extends GetxController {
       }
     });
   }
+
+void addData() async {
+  try {
+    // tạo document mới với dữ liệu cần thêm vào
+    DocumentReference newDoc = await phongHocCollection.add({
+       "sv":[
+        {
+            "ten":"hoang"
+        }
+       ],
+       "phong":{
+            "tenphong":"phonga"
+       },
+       "mon":{
+            "tenmon":"tenmon"
+       },
+       "thoigian":{
+            "tenca":"tenca"
+       },
+       "giangvien":{
+            "tengv":"tengv"
+       },
+       "phongban":{
+            "tenphong":"tenphong"
+       }
+    });
+    print('Thêm dữ liệu thành công: ${newDoc.id}');
+  } catch (e) {
+    print('Lỗi khi thêm dữ liệu: $e');
+  }
+}
+
 }

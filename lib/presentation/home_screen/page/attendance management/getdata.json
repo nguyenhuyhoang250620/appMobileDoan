@@ -1,0 +1,24 @@
+[
+    {
+       "sv":[
+        {
+            "ten":"hoang"
+        }
+       ],
+       "phong":{
+            "tenphong":"phonga"
+       },
+       "mon":{
+            "tenmon":"tenmon"
+       },
+       "thoigian":{
+            "tenca":"tenca"
+       },
+       "giangvien":{
+            "tengv":"tengv"
+       },
+       "phongban":{
+            "tenphong":"tenphong"
+       }
+    }
+]

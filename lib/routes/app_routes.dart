@@ -14,7 +14,7 @@ class AppRoutes {
 
   static String diviceScreen = '/divice_screen';
 
-  static String initialRoute = '/divice_screen';
+  static String initialRoute = '/home_screen';
 
   static List<GetPage> pages = [
     GetPage(

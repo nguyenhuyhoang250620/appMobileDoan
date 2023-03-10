@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:app_mobile_doan/core/app_export.dart';
+import 'package:app_mobile_doan/core/utils/constants.dart';
 import 'package:app_mobile_doan/presentation/divice_screen/controller/divice_controller.dart';
 import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,77 +30,70 @@ class _DiviceState extends State<DiviceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(' Scanner'),
+        title: Text('Điểm danh',style: AppStyle.txtInterMedium18.copyWith(color: darkTextColor,fontWeight: FontWeight.bold),),
+        backgroundColor: bgColor,
+        actions: [
+          IconButton(onPressed: () {
+            Get.offAndToNamed(AppRoutes.homeScreen);
+          }, icon: Icon(Icons.close,color: darkTextColor,size: 25,))
+        ],
       ),
       body: Center(
         child: Column(
           children: [
             Expanded(
-                flex: 5,
-                child: Obx(() => controller.test.value == true
-                        ? AiBarcodeScanner(
-                            validateText: '',
-                            onScannerStarted: (p0) {
-                            }, // link to be validated
-                            validateType: ValidateType.contains,
-                            // canPop: true,
-                            // allowDuplicates: true,
-                            errorColor: Colors.red,
-                            successColor: controller.test1.value
-                                ? Colors.red
-                                : Colors.green,
+                flex: 6,
+                child: Obx(() => AiBarcodeScanner(
+                    validateText: '',
+                    onScannerStarted: (p0) {
+                    }, // link to be validated
+                    validateType: ValidateType.contains,
+                    // canPop: true,
+                    // allowDuplicates: true,
+                    errorColor: Colors.red,
+                    successColor: controller.test1.value
+                        ? Colors.red
+                        : Colors.green,
+                    
+                    onScan: (String value) {
+                      debugPrint(value);
+                      controller.MaSV.value = value;
+                      // listnua.add(value);
+                      // controller.listtest.value =
+                      //     listnua.toSet().toList();
+                      // barcode = value;
+                      // color.value = "2";
+                      controller.test1.value = false;
 
-                            onScan: (String value) {
-                              debugPrint(value);
-                              controller.MaSV.value = value;
-                              // listnua.add(value);
-                              // controller.listtest.value =
-                              //     listnua.toSet().toList();
-                              // barcode = value;
-                              // color.value = "2";
-                              // controller.test1.value = false;
-
-                              Future.delayed(Duration(milliseconds: 2500), () {
-                                controller.test1.value = true;
-                              });
-                            },
-                            onDetect: (p0) {
-                              if(controller.MaSV.isNotEmpty){
-                                controller.image = p0.image;
-                              DeviceModel model = DeviceModel(
-                                  title: controller.MaSV.value,
-                                  value: controller.image!);
-                              controller.lancuoi.value.add(model);
-                              List<DeviceModel> devices =
-                                  controller.lancuoi.value;
-                              controller.uniqueDevices.value = devices
-                                  .where((device) => device.title != null)
-                                  .toSet()
-                                  .toList();
-                              }
-                            },
-                            controller: MobileScannerController(
-                              detectionSpeed: DetectionSpeed.unrestricted,
-                              autoStart: true,
-                              facing: CameraFacing.back,
-                              returnImage: true,
-                            ),
-                            borderColor: Colors.red,
-                          )
-                        : Container()
-                    // Container(
-                    //     height: 300,
-                    //     width: 500,
-                    //     child: Transform.rotate(
-                    //       angle: pi / 2,
-                    //       child: Image.memory(
-                    //           filterQuality: FilterQuality.high,
-                    //           controller.image!),
-                    //     ),
-                    //   ),
-                    )),
+                      Future.delayed(Duration(milliseconds: 2500), () {
+                        controller.test1.value = true;
+                      });
+                    },
+                    onDetect: (p0) {
+                      if(controller.MaSV.isNotEmpty){
+                        controller.image = p0.image;
+                      DeviceModel model = DeviceModel(
+                          title: controller.MaSV.value,
+                          value: controller.image!);
+                      controller.lancuoi.value.add(model);
+                      List<DeviceModel> devices =
+                          controller.lancuoi.value;
+                      controller.uniqueDevices.value = devices
+                          .where((device) => device.title != null)
+                          .toSet()
+                          .toList();
+                      }
+                    },
+                    controller: MobileScannerController(
+                      detectionSpeed: DetectionSpeed.unrestricted,
+                      autoStart: true,
+                      facing: CameraFacing.back,
+                      returnImage: true,
+                    ),
+                    borderColor: Colors.red,
+                  ),)),
             Expanded(
-                flex: 5,
+                flex: 4,
                 child: Obx(() => ListView.builder(
                       itemCount: controller.uniqueDevices.length,
                       itemBuilder: (context, index) {
