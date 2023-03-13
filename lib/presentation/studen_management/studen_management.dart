@@ -1,25 +1,12 @@
 import 'package:app_mobile_doan/presentation/divice_screen/controller/divice_controller.dart';
+import 'package:app_mobile_doan/presentation/studen_management/studen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:multiselect/multiselect.dart';
 
 import '../../core/app_export.dart';
 import '../../core/utils/constants.dart';
-
-class StudenManagement extends StatefulWidget{
-  @override
-  State<StatefulWidget> createState() {
-    return StudenState();
-  }
-
-}
-class StudenState extends State<StudenManagement>{
-  final controller = Get.find<DiviceController>();
-  @override
-  void initState() {
-    print('HoangNH: ${controller.uniqueDevices.length}');
-    super.initState();
-  }
+class StudenManagement extends GetWidget<StudenController>{
  @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,10 +58,7 @@ class StudenState extends State<StudenManagement>{
           ),
           Expanded(
             flex: 7,
-            child: Obx(() => ListView.builder(
-              itemCount: controller.uniqueDevices.length,
-              itemBuilder: (context, index) {
-                return Container(
+            child: Container(
                   margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.black),
@@ -99,16 +83,20 @@ class StudenState extends State<StudenManagement>{
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text("Họ tên : ${controller.uniqueDevices[index].title}"),
+                              TextButton(
+                                onPressed: () {
+                                  controller.getEmployeeUser.map((e){
+                                    print('HoangNH: ${e.TenSV}');
+                                  }).toList();
+                                },
+                                child: Text("Họ tên : ")),
                             ],
                           ),
                         ),
                       )
                     ],
                   ),
-                );
-              },
-            ),)
+                )
           )
         ],
       ),
