@@ -48,6 +48,7 @@ dependencies:
   pin_code_fields: ^7.4.0
   supercharged: ^2.1.1
   sqflite: ^2.2.5
+  date_time_picker: ^2.1.0
 dev_dependencies: 
   flutter_test: 
     sdk: flutter

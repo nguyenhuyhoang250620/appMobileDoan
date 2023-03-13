@@ -20,22 +20,22 @@ class AppStyle {
     fontWeight: FontWeight.w500,
   );
 
-  static TextStyle txtInterBold14 = TextStyle(
-    color: ColorConstant.green500,
+  static TextStyle txtContentCard = TextStyle(
+    color: ColorConstant.black900,
     fontSize: getFontSize(
       14,
     ),
     fontFamily: 'Inter',
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w100,
   );
 
-  static TextStyle txtInterMedium16 = TextStyle(
+  static TextStyle txtCartTitle = TextStyle(
     color: ColorConstant.gray900,
     fontSize: getFontSize(
       16,
     ),
     fontFamily: 'Inter',
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.bold,
   );
 
   static TextStyle txtInterMedium14 = TextStyle(
@@ -125,11 +125,11 @@ class AppStyle {
     fontWeight: FontWeight.w500,
   );
 
-  static TextStyle txtRobotoRegular20Black9001 = TextStyle(
+  static TextStyle titleTop = TextStyle(
     color: ColorConstant.black900,
     fontSize: getFontSize(
-      20,
+      22,
     ),
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.bold,
   );
 }

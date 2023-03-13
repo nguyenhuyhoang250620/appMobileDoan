@@ -1,11 +1,14 @@
-import 'package:app_mobile_doan/presentation/home_screen/page/attendance%20management/attendance_management_screen.dart';
+import 'package:app_mobile_doan/presentation/home_screen/models/home_model.dart';
 import 'package:app_mobile_doan/presentation/home_screen/page/scanner_management/scanner_management_screen.dart';
 import 'package:app_mobile_doan/presentation/home_screen/page/settings/settings.dart';
 import 'package:app_mobile_doan/presentation/home_screen/page/system_management/system_management.dart';
 
+import '../../core/utils/constants.dart';
 import 'controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:app_mobile_doan/core/app_export.dart';
+
+import 'models/data.dart';
 
 class HomeScreen extends GetWidget<HomeController> {
   @override
@@ -13,47 +16,142 @@ class HomeScreen extends GetWidget<HomeController> {
     return SafeArea(
       child: Scaffold(
           backgroundColor: ColorConstant.whiteA700,
-          body: Obx(() {
-            if (controller.selectedIndex.value == 0) {
-              return ScannerScreen(
-                homeController: controller,
-              );
-            } else if (controller.selectedIndex.value == 1) {
-              return AttendanceScreen();
-            } else if (controller.selectedIndex.value == 2) {
-              return SystemScreen(
-                controller: controller,
-              );
-            }
-            return SettingManagement();
-          }),
-          bottomNavigationBar: Obx(
-            () => BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'Home',
-                    backgroundColor: Colors.black),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.article_outlined),
-                    label: 'Attendance',
-                    backgroundColor: Colors.black),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.people),
-                    label: 'Class',
-                    backgroundColor: Colors.black),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
-                    label: 'Setting',
-                    backgroundColor: Colors.black)
+          body: Container(
+            height: Get.height,
+            width: Get.width,
+            color: bgColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: appPadding),
+                        child: Text("Hii,Văn Tiến 👋",style: AppStyle.titleTop,),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: Icon(Icons.power_settings_new_outlined),
+                          onPressed: () {
+                            
+                          },
+                        ),
+                      )
+                    ],
+                  )
+                ),
+                Expanded(
+                  flex: 8,
+                  child: Container(
+                    height: Get.height,
+                    width: Get.width,
+                    padding: EdgeInsets.only(top: appPadding*2),
+                    color: bgColor,
+                    child: GridView.count(
+                      primary: false,
+                      // padding: const EdgeInsets.all(20),
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 2,
+                      children: <Widget>[
+                        ...List.generate(modelList.length, (index) {
+                          HomeModel model = modelList[index];
+                          return InkWell(
+                            onTap: () {
+                              if (index == 0) {
+                              }
+                              if (index == 1) {
+                                Get.offAndToNamed(AppRoutes.diviceScreen);
+                              }
+                            },
+                            child: InkWell(
+                              onTap:() {
+                                if(index == 0){
+                                  Get.offAndToNamed(AppRoutes.attendanceScreen);
+                                }
+                                else if(index == 1){
+                                  Get.offAndToNamed(AppRoutes.studenManagement);
+                                }
+                                else if(index == 2){
+
+                                }
+                                else if(index == 3){
+                                  
+                                }
+                                else if(index == 4){
+                                  Get.offAndToNamed(AppRoutes.diviceScreen);
+                                }
+                                else{
+                                  print('HoangNH: logout');
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                margin: EdgeInsets.all(appPadding),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    color: bgColor,
+                                       boxShadow: [
+                                        BoxShadow(
+                                          color: darkTextColor,
+                                          blurRadius: 2.0, // has the effect of softening the shadow
+                                          spreadRadius: 2.0, // has the effect of extending the shadow
+                                          offset: Offset(
+                                            0.0, // horizontal, move right 10
+                                            2.0, // vertical, move down 10
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(flex: 6,child: Container(
+                                      height: 80,
+                                      width: 80,
+                                      margin: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: model.color
+                                      ),
+                                      child: model.icon,
+                                    )),
+                                    Expanded(flex: 2,child: Text('${model.title}',style: AppStyle.txtContentCard,)),
+                                    Divider(color: textColor,),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                            "${model.content}",
+                                            style: AppStyle.txtInterRegular14
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        })
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Center(
+                    child: Text("Attendance Version 1.0 @release by Splendor"),
+                  ),
+                )
               ],
-              currentIndex: controller.selectedIndex.value,
-              selectedItemColor: Colors.amber[800],
-              onTap: (e) {
-                controller.selectedIndex.value = e;
-              },
             ),
-          )),
+          )
+          ),
     );
   }
 }

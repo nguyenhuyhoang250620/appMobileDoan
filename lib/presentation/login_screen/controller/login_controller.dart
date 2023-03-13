@@ -35,11 +35,7 @@ class LoginController extends GetxController {
         email: email,
         password: password,
       );
-      if (isAdmin == userCredential.user!.email) {
-        Get.offAndToNamed(AppRoutes.diviceScreen);
-      } else {
-        Get.offAndToNamed(AppRoutes.homeScreen);
-      }
+      Get.offAndToNamed(AppRoutes.homeScreen);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');

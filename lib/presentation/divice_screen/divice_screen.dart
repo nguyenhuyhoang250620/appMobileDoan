@@ -34,7 +34,7 @@ class _DiviceState extends State<DiviceScreen> {
         backgroundColor: bgColor,
         actions: [
           IconButton(onPressed: () {
-            Get.offAndToNamed(AppRoutes.homeScreen);
+            Get.toNamed(AppRoutes.homeScreen);
           }, icon: Icon(Icons.close,color: darkTextColor,size: 25,))
         ],
       ),
@@ -63,6 +63,7 @@ class _DiviceState extends State<DiviceScreen> {
                       //     listnua.toSet().toList();
                       // barcode = value;
                       // color.value = "2";
+                      controller.listenToDocumentChanges(value);
                       controller.test1.value = false;
 
                       Future.delayed(Duration(milliseconds: 2500), () {
@@ -97,22 +98,51 @@ class _DiviceState extends State<DiviceScreen> {
                 child: Obx(() => ListView.builder(
                       itemCount: controller.uniqueDevices.length,
                       itemBuilder: (context, index) {
-                        return Row(
-                          children: [
-                            Text(
-                                '${controller.uniqueDevices.value[index].title}'),
-                            Container(
-                              height: 30,
-                              width: 30,
-                              child: Transform.rotate(
-                                angle: pi / 2,
-                                child: Image.memory(
-                                    filterQuality: FilterQuality.high,
-                                    controller
-                                        .uniqueDevices.value[index].value),
+                        return Container(
+                          height: 100,
+                          margin: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black),
+                              borderRadius: BorderRadius.circular(8.0)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child:Container(
+                                  height: 50,
+                                  width: 150,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Get.dialog(Dialog(
+                                        backgroundColor: Colors.transparent,
+                                        child: Transform.rotate(
+                                            angle: pi / 2,
+                                            child: Image.memory(
+                                                fit: BoxFit.cover,
+                                                filterQuality: FilterQuality.high,
+                                                controller
+                                                    .uniqueDevices.value[index].value),
+                                          ),
+                                      ));
+                                    },
+                                    child: Transform.rotate(
+                                      angle: pi / 2,
+                                      child: Image.memory(
+                                          fit: BoxFit.contain,
+                                          filterQuality: FilterQuality.high,
+                                          controller
+                                              .uniqueDevices.value[index].value),
+                                    ),
+                                  ),
+                                )
                               ),
-                            )
-                          ],
+                              Expanded(
+                                flex: 5,
+                                child: Center(child: Text(
+                                      '${controller.uniqueDevices.value[index].title}'),)
+                              )
+                            ],
+                          ),
                         );
                       },
                     ))),

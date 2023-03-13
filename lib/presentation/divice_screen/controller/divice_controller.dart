@@ -21,7 +21,7 @@ class DiviceController extends GetxController {
   RxList<DeviceModel> uniqueDevices = <DeviceModel>[].obs;
   @override
   void onInit() {
-    listenToDocumentChanges();
+    // listenToDocumentChanges('B123');
     getUserData();
     super.onInit();
   }
@@ -57,18 +57,14 @@ class DiviceController extends GetxController {
     });
   }
 
-  void listenToDocumentChanges() {
+  void listenToDocumentChanges(String doc) {
     firestoreInstance
         .collection("User")
-        .doc("132")
+        .doc(doc)
         .snapshots()
         .listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        if ((documentSnapshot.data() as Map)['GioiTinh'] == 'true') {
-          test.value = true;
-        } else {
-          test.value = false;
-        }
+        print('HoangNH: ${(documentSnapshot.data() as Map)["TenSV"]}');
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {
         print("Document does not exist on the database");
