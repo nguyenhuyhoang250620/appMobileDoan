@@ -79,10 +79,10 @@ class HomeScreen extends GetWidget<HomeController> {
                                   Get.offAndToNamed(AppRoutes.studenManagement);
                                 }
                                 else if(index == 2){
-
+                                  Get.offAndToNamed(AppRoutes.chartsScreen);
                                 }
                                 else if(index == 3){
-                                  
+                                  Get.offAndToNamed(AppRoutes.calendarEvent);
                                 }
                                 else if(index == 4){
                                   Get.offAndToNamed(AppRoutes.diviceScreen);

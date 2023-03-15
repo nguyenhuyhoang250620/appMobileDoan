@@ -1,22 +1,15 @@
 import 'package:app_mobile_doan/core/app_export.dart';
 import 'package:app_mobile_doan/core/utils/constants.dart';
+import 'package:app_mobile_doan/presentation/attendance_screen/attendance_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-class AttendanceScreen extends StatefulWidget{
-  @override
-  State<StatefulWidget> createState() {
-    return AttendanceState();
-  }
-
-}
-class AttendanceState extends State<AttendanceScreen>{
+class AttendanceScreen extends GetWidget<AttendanceController>{
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('User');
+    CollectionReference users = FirebaseFirestore.instance.collection('Config');
     return Scaffold(
       appBar:AppBar(
       leading: IconButton(
@@ -125,7 +118,9 @@ class AttendanceState extends State<AttendanceScreen>{
                                             }
 
                                             return new ListView(
-                                              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                                              children: snapshot.data!.docs.asMap().entries.map((entry) {
+                                              int index = entry.key + 1-1;
+                                              DocumentSnapshot document = entry.value;
                                                 return Container(
                                                 height: 80,
                                                 margin: EdgeInsets.all(10),
@@ -138,28 +133,29 @@ class AttendanceState extends State<AttendanceScreen>{
                                                     Expanded(
                                                       flex: 2,
                                                       child: Container(
-                                                        margin: EdgeInsets.all(5),
+                                                        padding: EdgeInsets.all(appPadding/2),
                                                         decoration: BoxDecoration(
-                                                          shape: BoxShape.circle,
-                                                          border: Border.all(color: darkTextColor)
+                                                          borderRadius: BorderRadius.circular(8.0),
+                                                          border: Border.all(color: Colors.white, width: 1),
                                                         ),
-                                                        child: ClipOval(
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(8.0),
                                                           child: FadeInImage(
-                                                            placeholder: AssetImage('assets/images/image_not_found.png'),
-                                                            image: NetworkImage(
-                                                              '${(document.data() as Map)["url"].toString()}',
-                                                              scale: 1.0
-                                                            ),
-                                                            imageErrorBuilder: (context, error, stackTrace) =>Icon(
-                                                                Icons.person,
-                                                                color: darkTextColor,
-                                                                size: 40,
+                                                                placeholder: AssetImage('assets/images/image_not_found.png'),
+                                                                image: NetworkImage(
+                                                                  '${(document.data() as Map)["url"].toString()}',
+                                                                  scale: 1.0
+                                                                ),
+                                                                imageErrorBuilder: (context, error, stackTrace) => Icon(
+                                                                  Icons.person,
+                                                                  color: darkTextColor,
+                                                                  size: 40,
+                                                                ),
+                                                                fit: BoxFit.cover,
+                                                                height: 100,
+                                                                width: 10,
                                                               ),
-                                                            fit: BoxFit.cover,
-                                                            height: 50,
-                                                            // width: 50,
-                                                          ),
-                                                        )
+                                                        ),
                                                       ),
                                                     ),
                                                     Expanded(
@@ -170,7 +166,7 @@ class AttendanceState extends State<AttendanceScreen>{
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                           children: [
-                                                            Text("${(document.data() as Map)["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
+                                                            Text("${(document.data() as Map)['danhsach'][index]["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
                                                             RichText(
                                                               text: TextSpan(
                                                                 children: [
@@ -179,7 +175,7 @@ class AttendanceState extends State<AttendanceScreen>{
                                                                     style: AppStyle.txtContentCard
                                                                   ),
                                                                   TextSpan(
-                                                                    text: '${(document.data() as Map)["MaSV"].toString()}',
+                                                                    text: '${(document.data() as Map)['danhsach'][index]["MaSV"].toString()}',
                                                                     style: AppStyle.txtContentCard.copyWith(color: blue)
                                                                   ),
                                                                 ],
@@ -228,7 +224,9 @@ class AttendanceState extends State<AttendanceScreen>{
                 }
 
                 return new ListView(
-                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  children:  snapshot.data!.docs.asMap().entries.map((entry) {
+                  int index = entry.key + 1-1;
+                  DocumentSnapshot document = entry.value;
                     return Container(
                     height: 100,
                     width: Get.width,
@@ -241,29 +239,30 @@ class AttendanceState extends State<AttendanceScreen>{
                         Expanded(
                           flex: 2,
                           child: Container(
-                            margin: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: darkTextColor)
-                            ),
-                            child: ClipOval(
-                              child: FadeInImage(
-                                placeholder: AssetImage('assets/images/image_not_found.png'),
-                                image: NetworkImage(
-                                  '${(document.data() as Map)["url"].toString()}',
-                                  scale: 1.0
-                                ),
-                                imageErrorBuilder: (context, error, stackTrace) =>Icon(
-                                    Icons.person,
-                                    color: darkTextColor,
-                                    size: 60,
-                                  ),
-                                fit: BoxFit.cover,
-                                height: 68,
-                                // width: 50,
+                              padding: EdgeInsets.all(appPadding),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(color: Colors.white, width: 1),
                               ),
-                            )
-                          ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: FadeInImage(
+                                      placeholder: AssetImage('assets/images/image_not_found.png'),
+                                      image: NetworkImage(
+                                        '${(document.data() as Map)['danhsach'][index]["url"].toString()}',
+                                        scale: 1.0
+                                      ),
+                                      imageErrorBuilder: (context, error, stackTrace) => Icon(
+                                        Icons.person,
+                                        color: darkTextColor,
+                                        size: 40,
+                                      ),
+                                      fit: BoxFit.cover,
+                                      height: 100,
+                                      width: 10,
+                                    ),
+                              ),
+                            ),
                         ),
                         Expanded(
                           flex: 7,
@@ -273,7 +272,7 @@ class AttendanceState extends State<AttendanceScreen>{
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text("${(document.data() as Map)["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
+                                Text("${(document.data() as Map)['danhsach'][index]["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
                                  RichText(
                                   text: TextSpan(
                                     children: [
@@ -282,7 +281,7 @@ class AttendanceState extends State<AttendanceScreen>{
                                         style: AppStyle.txtContentCard
                                       ),
                                       TextSpan(
-                                        text: '${(document.data() as Map)["MaSV"].toString()}',
+                                        text: '${(document.data() as Map)["danhsach"][index]["MaSV"].toString()}',
                                         style: AppStyle.txtContentCard.copyWith(color: blue)
                                       ),
                                     ],

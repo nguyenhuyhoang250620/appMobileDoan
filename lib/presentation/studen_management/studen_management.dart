@@ -1,5 +1,7 @@
 import 'package:app_mobile_doan/presentation/divice_screen/controller/divice_controller.dart';
 import 'package:app_mobile_doan/presentation/studen_management/studen_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:multiselect/multiselect.dart';
@@ -7,8 +9,9 @@ import 'package:multiselect/multiselect.dart';
 import '../../core/app_export.dart';
 import '../../core/utils/constants.dart';
 class StudenManagement extends GetWidget<StudenController>{
- @override
+  @override
   Widget build(BuildContext context) {
+    CollectionReference users = FirebaseFirestore.instance.collection('Config');
     return Scaffold(
       appBar:AppBar(
       leading: IconButton(
@@ -21,7 +24,7 @@ class StudenManagement extends GetWidget<StudenController>{
       title: Text(
           "Hệ thống điểm danh",
           style: AppStyle.titleTopPage,
-      ),),
+        ),),
       body: Container(
       height: Get.height,
       width: Get.width,
@@ -30,73 +33,308 @@ class StudenManagement extends GetWidget<StudenController>{
           Expanded(
             flex: 2,
             child: Container(
-              height: Get.height,
-              width: Get.width,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(8.0)),
-                child: DropDownMultiSelect(
-                  icon: Icon(Icons.search),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    filled: false,
-                  ),
-                  onChanged: (p0) {
-                    print(p0);
-                  },
-                  enabled: true,
-                  //TungVD: list location camera init from server with isMonitoring = true
-                  options: ["1", "2"],
-                  //TungVD: list item selected filter from allvmslocationlist
-                  selectedValues: [],
-                  whenEmpty: 'Tìm kiếm sinh viên',
-                ),
-              ),
-            ),
+                height: Get.height,
+                width: Get.width,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: Get.width,
+                      padding: EdgeInsets.only(left: appPadding*5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                            Text('Chọn thời gian', style: AppStyle.txtContentCard.copyWith(color: darkTextColor)),
+                            SizedBox(width: 10,),
+                            Icon(
+                                  Icons.edit_calendar_rounded,
+                                  color: Colors.blue,
+                                  size: 24.0,
+                                  semanticLabel: 'Xem lịch',
+                                ),
+                            SizedBox(width: 10,),
+                            Container(
+                                width: 150,
+                                child:DateTimePicker(
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                      ),
+                                      type: DateTimePickerType.date,
+                                      dateMask: 'dd-MM-yyyy',
+                                      initialValue: DateTime.now().toString(),
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2100),
+                                      icon: const Icon(Icons.event, size: 24),
+                                      onChanged: (val) {
+                                        
+                                      },
+                                      // validator: (val) {
+                                      //   print(val);
+                                      //   vmsController.runNameFilter(val!);
+                                      //   return null;
+                                      // },
+                                    ),
+                              )  
+                            
+                        ],
+                      ),
+                    ),
+                    Text("Sỹ số lớp : 22/30, Vắng 2"),
+                    TextButton(
+                        onPressed: () {
+                          Get.dialog(
+                            Dialog(
+                                child: Container(
+                                  height: Get.height,
+                                  width: Get.width,
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child:Align(
+                                          alignment: Alignment.centerRight,
+                                          child: IconButton(
+                                            onPressed: () => Get.back(),
+                                            icon: Icon(Icons.close),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text("Sinh viên vắng mặt",style: AppStyle.titleTopPage,),
+                                      ),
+                                      Expanded(
+                                        flex: 9,
+                                        child:StreamBuilder<QuerySnapshot>(
+                                          stream: users.snapshots(),
+                                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                            if (snapshot.hasError) {
+                                              return Text('Something went wrong');
+                                            }
+
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return Text("Loading");
+                                            }
+
+                                            return new ListView(
+                                              children: snapshot.data!.docs.asMap().entries.map((entry) {
+                                              int index = entry.key + 1-1;
+                                              DocumentSnapshot document = entry.value;
+                                                return Container(
+                                                height: 80,
+                                                margin: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(color: Colors.black),
+                                                    borderRadius: BorderRadius.circular(8.0)),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(appPadding/2),
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(8.0),
+                                                          border: Border.all(color: Colors.white, width: 1),
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(8.0),
+                                                          child: FadeInImage(
+                                                                placeholder: AssetImage('assets/images/image_not_found.png'),
+                                                                image: NetworkImage(
+                                                                  '${(document.data() as Map)["url"].toString()}',
+                                                                  scale: 1.0
+                                                                ),
+                                                                imageErrorBuilder: (context, error, stackTrace) => Icon(
+                                                                  Icons.person,
+                                                                  color: darkTextColor,
+                                                                  size: 40,
+                                                                ),
+                                                                fit: BoxFit.cover,
+                                                                height: 100,
+                                                                width: 10,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 7,
+                                                      child: Container(
+                                                        padding: EdgeInsets.symmetric(vertical: 20,horizontal: 5),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Text("${(document.data() as Map)['danhsach'][index]["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
+                                                            RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  TextSpan(
+                                                                    text: 'MSV: ',
+                                                                    style: AppStyle.txtContentCard
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '${(document.data() as Map)['danhsach'][index]["MaSV"].toString()}',
+                                                                    style: AppStyle.txtContentCard.copyWith(color: blue)
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: 10,
+                                                      decoration: BoxDecoration(
+                                                        color: cardA,
+                                                        borderRadius: BorderRadius.only(topRight: Radius.circular(6.0),bottomRight: Radius.circular(6.0))
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                              }).toList(),
+                                            );
+                                          },
+                                        )
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ),
+                          );
+                        },
+                        child: Text("Bấm vào để xem chi tiết"))
+                  ],
+                )),
           ),
           Expanded(
-            flex: 7,
-            child: Container(
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(8.0)),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          padding: EdgeInsets.all(20),
-                          child: Icon(
-                            Icons.people,
-                            size: 30,
+            flex: 8,
+            child:StreamBuilder<QuerySnapshot>(
+              stream: users.snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text("Loading");
+                }
+
+                return new ListView(
+                  children:  snapshot.data!.docs.asMap().entries.map((entry) {
+                  int index = entry.key + 1-1;
+                  DocumentSnapshot document = entry.value;
+                    return Container(
+                    height: 100,
+                    width: Get.width,
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: darkTextColor),
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                              padding: EdgeInsets.all(appPadding),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(color: Colors.white, width: 1),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: FadeInImage(
+                                      placeholder: AssetImage('assets/images/image_not_found.png'),
+                                      image: NetworkImage(
+                                        '${(document.data() as Map)['danhsach'][index]["url"].toString()}',
+                                        scale: 1.0
+                                      ),
+                                      imageErrorBuilder: (context, error, stackTrace) => Icon(
+                                        Icons.person,
+                                        color: darkTextColor,
+                                        size: 40,
+                                      ),
+                                      fit: BoxFit.cover,
+                                      height: 100,
+                                      width: 10,
+                                    ),
+                              ),
+                            ),
+                        ),
+                        Expanded(
+                          flex: 7,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 10,horizontal: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text("${(document.data() as Map)['danhsach'][index]["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
+                                 RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Mã số sinh viên : ',
+                                        style: AppStyle.txtContentCard
+                                      ),
+                                      TextSpan(
+                                        text: '${(document.data() as Map)["danhsach"][index]["MaSV"].toString()}',
+                                        style: AppStyle.txtContentCard.copyWith(color: blue)
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Thời gian vào : ',
+                                        style: AppStyle.txtContentCard
+                                      ),
+                                      TextSpan(
+                                        text: '7:30',
+                                        style: AppStyle.txtContentCard.copyWith(color: green)
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Thời gian ra : ',
+                                        style: AppStyle.txtContentCard
+                                      ),
+                                      TextSpan(
+                                        text: '7:30',
+                                        style: AppStyle.txtContentCard.copyWith(color: red),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 8,
-                        child: Container(
-                          padding: EdgeInsets.all(5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  controller.getEmployeeUser.map((e){
-                                    print('HoangNH: ${e.TenSV}');
-                                  }).toList();
-                                },
-                                child: Text("Họ tên : ")),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                )
+                        Container(
+                            width: 10,
+                            decoration: BoxDecoration(
+                              color: cardA,
+                              borderRadius: BorderRadius.only(topRight: Radius.circular(6.0),bottomRight: Radius.circular(6.0))
+                            ),
+                          )
+                      ],
+                    ),
+                  );
+                  }).toList(),
+                );
+              },
+            )
           )
         ],
       ),

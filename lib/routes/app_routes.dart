@@ -1,6 +1,9 @@
 
 import 'package:app_mobile_doan/presentation/attendance_screen/attendance_binding.dart';
 import 'package:app_mobile_doan/presentation/attendance_screen/attendance_screen.dart';
+import 'package:app_mobile_doan/presentation/calendar_event/calendar_event.dart';
+import 'package:app_mobile_doan/presentation/calendar_event/calendart_binding.dart';
+import 'package:app_mobile_doan/presentation/charts_screen/charts_binding.dart';
 import 'package:app_mobile_doan/presentation/divice_screen/binding/divice_binding.dart';
 import 'package:app_mobile_doan/presentation/divice_screen/divice_screen.dart';
 import 'package:app_mobile_doan/presentation/home_screen/home_screen.dart';
@@ -10,6 +13,8 @@ import 'package:app_mobile_doan/presentation/studen_management/studen_management
 import 'package:get/get.dart';
 import 'package:app_mobile_doan/presentation/login_screen/binding/login_binding.dart';
 import 'package:app_mobile_doan/presentation/login_screen/login_screen.dart';
+
+import '../presentation/charts_screen/charts_screen.dart';
 
 class AppRoutes {
   static String loginScreen = '/login_screen';
@@ -23,6 +28,10 @@ class AppRoutes {
   static String attendanceScreen = '/attendance_screen';
 
   static String studenManagement = '/studen_management';
+
+  static String chartsScreen = '/charts_screen';
+
+  static String calendarEvent = '/calendar_event';
 
   static List<GetPage> pages = [
     GetPage(
@@ -65,6 +74,21 @@ class AppRoutes {
       page: () => StudenManagement(),
       bindings: [
         StudenBinding(),
+      ],
+    ),
+
+    GetPage(
+      name: chartsScreen,
+      page: () => ChartsScreen(),
+      bindings: [
+        ChartsBinding(),
+      ],
+    ),
+    GetPage(
+      name: calendarEvent,
+      page: () => CalendarEvent(),
+      bindings: [
+        CalendarBinding(),
       ],
     ),
   ];

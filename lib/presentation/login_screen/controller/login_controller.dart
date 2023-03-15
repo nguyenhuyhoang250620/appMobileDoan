@@ -32,9 +32,12 @@ class LoginController extends GetxController {
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
+        email: '${email}@gmail.com',
         password: password,
-      );
+      ).then((value){
+        print('HoangNH: $value');
+        return value;
+      });
       Get.offAndToNamed(AppRoutes.homeScreen);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
