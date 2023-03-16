@@ -11,7 +11,6 @@ import '../../core/utils/constants.dart';
 class StudenManagement extends GetWidget<StudenController>{
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('Config');
     return Scaffold(
       appBar:AppBar(
       leading: IconButton(
@@ -22,7 +21,7 @@ class StudenManagement extends GetWidget<StudenController>{
       ),
       backgroundColor: Colors.white,
       title: Text(
-          "Hệ thống điểm danh",
+          "Quản lý sinh viên",
           style: AppStyle.titleTopPage,
         ),),
       body: Container(
@@ -82,140 +81,13 @@ class StudenManagement extends GetWidget<StudenController>{
                         ],
                       ),
                     ),
-                    Text("Sỹ số lớp : 22/30, Vắng 2"),
-                    TextButton(
-                        onPressed: () {
-                          Get.dialog(
-                            Dialog(
-                                child: Container(
-                                  height: Get.height,
-                                  width: Get.width,
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        flex: 1,
-                                        child:Align(
-                                          alignment: Alignment.centerRight,
-                                          child: IconButton(
-                                            onPressed: () => Get.back(),
-                                            icon: Icon(Icons.close),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text("Sinh viên vắng mặt",style: AppStyle.titleTopPage,),
-                                      ),
-                                      Expanded(
-                                        flex: 9,
-                                        child:StreamBuilder<QuerySnapshot>(
-                                          stream: users.snapshots(),
-                                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                            if (snapshot.hasError) {
-                                              return Text('Something went wrong');
-                                            }
-
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return Text("Loading");
-                                            }
-
-                                            return new ListView(
-                                              children: snapshot.data!.docs.asMap().entries.map((entry) {
-                                              int index = entry.key + 1-1;
-                                              DocumentSnapshot document = entry.value;
-                                                return Container(
-                                                height: 80,
-                                                margin: EdgeInsets.all(10),
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(color: Colors.black),
-                                                    borderRadius: BorderRadius.circular(8.0)),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: Container(
-                                                        padding: EdgeInsets.all(appPadding/2),
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(8.0),
-                                                          border: Border.all(color: Colors.white, width: 1),
-                                                        ),
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(8.0),
-                                                          child: FadeInImage(
-                                                                placeholder: AssetImage('assets/images/image_not_found.png'),
-                                                                image: NetworkImage(
-                                                                  '${(document.data() as Map)["url"].toString()}',
-                                                                  scale: 1.0
-                                                                ),
-                                                                imageErrorBuilder: (context, error, stackTrace) => Icon(
-                                                                  Icons.person,
-                                                                  color: darkTextColor,
-                                                                  size: 40,
-                                                                ),
-                                                                fit: BoxFit.cover,
-                                                                height: 100,
-                                                                width: 10,
-                                                              ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 7,
-                                                      child: Container(
-                                                        padding: EdgeInsets.symmetric(vertical: 20,horizontal: 5),
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: [
-                                                            Text("${(document.data() as Map)['danhsach'][index]["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
-                                                            RichText(
-                                                              text: TextSpan(
-                                                                children: [
-                                                                  TextSpan(
-                                                                    text: 'MSV: ',
-                                                                    style: AppStyle.txtContentCard
-                                                                  ),
-                                                                  TextSpan(
-                                                                    text: '${(document.data() as Map)['danhsach'][index]["MaSV"].toString()}',
-                                                                    style: AppStyle.txtContentCard.copyWith(color: blue)
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      width: 10,
-                                                      decoration: BoxDecoration(
-                                                        color: cardA,
-                                                        borderRadius: BorderRadius.only(topRight: Radius.circular(6.0),bottomRight: Radius.circular(6.0))
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                              }).toList(),
-                                            );
-                                          },
-                                        )
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ),
-                          );
-                        },
-                        child: Text("Bấm vào để xem chi tiết"))
                   ],
                 )),
           ),
           Expanded(
             flex: 8,
             child:StreamBuilder<QuerySnapshot>(
-              stream: users.snapshots(),
+              stream: controller.phongHocCollection.where('MaGV',isEqualTo: 'Hoang').where('mahocphan.MaHocPhan',isEqualTo: 'MaHocPhan').snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return Text('Something went wrong');
@@ -224,11 +96,16 @@ class StudenManagement extends GetWidget<StudenController>{
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Text("Loading");
                 }
-
-                return new ListView(
-                  children:  snapshot.data!.docs.asMap().entries.map((entry) {
-                  int index = entry.key + 1-1;
-                  DocumentSnapshot document = entry.value;
+                List<DocumentSnapshot> documents = snapshot.data!.docs;
+                print('HoangNH: ${documents.length}');
+                List<dynamic> data = [];
+                documents.forEach((document) {
+                  print('HoangNH: ${(document.data() as Map)['danhsach']}');
+                  data += (document.data() as Map)['danhsach'];
+                });
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
                     return Container(
                     height: 100,
                     width: Get.width,
@@ -248,10 +125,10 @@ class StudenManagement extends GetWidget<StudenController>{
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
-                                child: FadeInImage(
+                                child:FadeInImage(
                                       placeholder: AssetImage('assets/images/image_not_found.png'),
                                       image: NetworkImage(
-                                        '${(document.data() as Map)['danhsach'][index]["url"].toString()}',
+                                        '${data[index]['url']}',
                                         scale: 1.0
                                       ),
                                       imageErrorBuilder: (context, error, stackTrace) => Icon(
@@ -274,7 +151,7 @@ class StudenManagement extends GetWidget<StudenController>{
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text("${(document.data() as Map)['danhsach'][index]["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
+                                Text("${data[index]['TenSV']}",style: AppStyle.txtCartTitle,),
                                  RichText(
                                   text: TextSpan(
                                     children: [
@@ -283,7 +160,7 @@ class StudenManagement extends GetWidget<StudenController>{
                                         style: AppStyle.txtContentCard
                                       ),
                                       TextSpan(
-                                        text: '${(document.data() as Map)["danhsach"][index]["MaSV"].toString()}',
+                                        text: '${data[index]['MaSV']}',
                                         style: AppStyle.txtContentCard.copyWith(color: blue)
                                       ),
                                     ],
@@ -331,7 +208,7 @@ class StudenManagement extends GetWidget<StudenController>{
                       ],
                     ),
                   );
-                  }).toList(),
+                  },
                 );
               },
             )

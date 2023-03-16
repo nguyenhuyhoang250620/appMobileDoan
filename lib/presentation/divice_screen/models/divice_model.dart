@@ -4,8 +4,10 @@ import 'dart:typed_data';
 class DeviceModel {
   final String title;
   final Uint8List value;
+  final String? name;
+  final String? time;
 
-  DeviceModel({required this.title, required this.value});
+  DeviceModel({required this.title, required this.value,this.name,this.time});
 
   @override
   bool operator ==(Object other) =>

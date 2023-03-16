@@ -12,6 +12,8 @@ class DiviceController extends GetxController {
   final firestoreInstance = FirebaseFirestore.instance;
   List<User> getEmployeeUser = <User>[].obs;
   var MaSV = "".obs;
+  var TenSV = "".obs;
+  var time = "".obs;
   var test = true.obs;
   var test1 = false.obs;
   Uint8List? image;
@@ -21,7 +23,6 @@ class DiviceController extends GetxController {
   RxList<DeviceModel> uniqueDevices = <DeviceModel>[].obs;
   @override
   void onInit() {
-    // listenToDocumentChanges('B123');
     getUserData();
     super.onInit();
   }
@@ -65,6 +66,8 @@ class DiviceController extends GetxController {
         .listen((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         print('HoangNH: ${(documentSnapshot.data() as Map)["TenSV"]}');
+        TenSV.value = '${(documentSnapshot.data() as Map)["TenSV"]}';
+        time.value = DateTime.now().toString();
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {
         print("Document does not exist on the database");

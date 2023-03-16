@@ -74,6 +74,8 @@ class _DiviceState extends State<DiviceScreen> {
                       if(controller.MaSV.isNotEmpty){
                         controller.image = p0.image;
                       DeviceModel model = DeviceModel(
+                          time: controller.time.value,
+                          name: controller.TenSV.value,
                           title: controller.MaSV.value,
                           value: controller.image!);
                       controller.lancuoi.value.add(model);
@@ -138,8 +140,16 @@ class _DiviceState extends State<DiviceScreen> {
                               ),
                               Expanded(
                                 flex: 5,
-                                child: Center(child: Text(
-                                      '${controller.uniqueDevices.value[index].title}'),)
+                                child: ListView(
+                                  children: [
+                                    Obx(() => Text(
+                                      '${controller.uniqueDevices.value[index].name}'),),
+                                    Text(
+                                      '${controller.uniqueDevices.value[index].title}'),
+                                    Obx(() => Text(
+                                      '${controller.uniqueDevices.value[index].time}'),)
+                                  ],
+                                )
                               )
                             ],
                           ),
