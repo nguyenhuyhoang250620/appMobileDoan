@@ -18,7 +18,8 @@ class MyDb {
                           name TEXT NOT NULL,
                           masv TEXT NOT NULL,
                           time TEXT NOT NULL,
-                          image TEXT NOT NULL
+                          image TEXT NOT NULL,
+                          magv TEXT NOT NULL
                       );
 
                       //create more table here

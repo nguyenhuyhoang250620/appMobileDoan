@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:app_mobile_doan/presentation/attendance_screen/attendance_model.dart';
+import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:app_mobile_doan/core/app_export.dart';
@@ -10,6 +11,7 @@ import '../database/attendance_database.dart';
 import '../divice_screen/models/divice_model.dart';
 
 class AttendanceController extends GetxController{
+    final homeController = Get.find<HomeController>();
     MyDb mydb = MyDb();
     RxList listDataAttendance =[].obs;    
     RxList listStudent =[].obs;    
@@ -38,9 +40,8 @@ class AttendanceController extends GetxController{
       });
       List<AttendanceModel> data = [];
       for(var item in listStudent){
-        await mydb.db.rawQuery('SELECT * FROM Attendance WHERE masv = "${item['masv']}" ').then((element){
+        await mydb.db.rawQuery('SELECT * FROM Attendance WHERE masv = "${item['masv']}" AND magv = "${homeController.MaGV.value}"').then((element){
           print('HoangNH: ${element}');
-          isGetdata.value = true;
             AttendanceModel model = AttendanceModel(
               id: random.nextInt(1000),
               name: element.first['name'].toString(),
@@ -53,11 +54,13 @@ class AttendanceController extends GetxController{
         return element;
       });
       }
+      isGetdata.value = true;
       comat.value = data.length;
       listEmployeeAttendance.value = data;
     });
   }
   Future<void> deleteAllDatabases() async {
+    print('HoangNH: xoas');
       var databasesPath = await getDatabasesPath();
       String path = join(databasesPath, 'Attendance.db');
       mydb.deleteDatabase(path);

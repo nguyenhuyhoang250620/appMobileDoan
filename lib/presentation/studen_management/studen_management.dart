@@ -1,4 +1,5 @@
 import 'package:app_mobile_doan/presentation/divice_screen/controller/divice_controller.dart';
+import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:app_mobile_doan/presentation/studen_management/studen_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
@@ -9,6 +10,7 @@ import 'package:multiselect/multiselect.dart';
 import '../../core/app_export.dart';
 import '../../core/utils/constants.dart';
 class StudenManagement extends GetWidget<StudenController>{
+  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +89,7 @@ class StudenManagement extends GetWidget<StudenController>{
           Expanded(
             flex: 8,
             child:StreamBuilder<QuerySnapshot>(
-              stream: controller.phongHocCollection.where('MaGV',isEqualTo: 'Hoang').where('mahocphan.MaHocPhan',isEqualTo: 'MaHocPhan').snapshots(),
+              stream: controller.phongHocCollection.where('MaGV',isEqualTo: homeController.MaGV.value).where('mahocphan.MaHocPhan',isEqualTo: 'MaHocPhan').snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return Text('Something went wrong');

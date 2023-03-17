@@ -2,6 +2,7 @@ import 'package:app_mobile_doan/presentation/home_screen/models/home_model.dart'
 import 'package:app_mobile_doan/presentation/home_screen/page/scanner_management/scanner_management_screen.dart';
 import 'package:app_mobile_doan/presentation/home_screen/page/settings/settings.dart';
 import 'package:app_mobile_doan/presentation/home_screen/page/system_management/system_management.dart';
+import 'package:app_mobile_doan/presentation/login_screen/controller/login_controller.dart';
 
 import '../../core/utils/constants.dart';
 import 'controller/home_controller.dart';
@@ -11,6 +12,7 @@ import 'package:app_mobile_doan/core/app_export.dart';
 import 'models/data.dart';
 
 class HomeScreen extends GetWidget<HomeController> {
+  final loginController = Get.find<LoginController>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -39,7 +41,7 @@ class HomeScreen extends GetWidget<HomeController> {
                         child: IconButton(
                           icon: Icon(Icons.power_settings_new_outlined),
                           onPressed: () {
-                            
+                            loginController.logout();
                           },
                         ),
                       )

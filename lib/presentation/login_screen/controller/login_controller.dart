@@ -29,9 +29,11 @@ class LoginController extends GetxController {
   }
 
   Future<void> onLogin(String email, String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('MaGV', email);
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: '${email}@gmail.com',
         password: password,
       ).then((value){
@@ -47,6 +49,13 @@ class LoginController extends GetxController {
       }
     }
   }
+  Future<void> logout() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove('MaGV'); 
+  await FirebaseAuth.instance.signOut(); 
+  Get.offAndToNamed(AppRoutes.loginScreen);
+}
+
 }
 
 void forgetPassword(String email) {}

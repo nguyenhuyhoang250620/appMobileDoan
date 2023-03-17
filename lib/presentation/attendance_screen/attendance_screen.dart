@@ -89,6 +89,7 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
                     Obx(() => Text("Sỹ số lớp : ${controller.comat.value.toString()}/${homeController.siso.value.toString()}, Vắng ${homeController.siso.value-controller.comat.value}"),),
                     TextButton(
                         onPressed: () {
+                          controller.deleteAllDatabases();
                           Get.dialog(
                             Dialog(
                                 child: Container(

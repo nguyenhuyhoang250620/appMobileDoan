@@ -27,6 +27,7 @@ class _DiviceState extends State<DiviceScreen> {
   String barcode = 'Tap  to scan';
   var color = "1".obs;
   final controller = Get.find<DiviceController>();
+  final homeController = Get.find<HomeController>();
   final List<String> listnua = [];
   final List<Uint8List> listnuahay = [];
   final List<DeviceModel> landau = [];
@@ -84,7 +85,9 @@ class _DiviceState extends State<DiviceScreen> {
                           time: controller.time.value,
                           name: controller.TenSV.value,
                           title: controller.MaSV.value,
-                          value: controller.image!);
+                          value: controller.image!,
+                          magv: homeController.MaGV.value
+                          );
                       controller.lancuoi.value.add(model);
                       List<DeviceModel> devices =
                           controller.lancuoi.value;

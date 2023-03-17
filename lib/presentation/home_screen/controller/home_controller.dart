@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:app_mobile_doan/presentation/home_screen/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '/core/app_export.dart';
 
@@ -16,10 +17,11 @@ class HomeController extends GetxController {
   var test1 = false.obs;
   Uint8List? image;
   var siso = 0.obs;
+  var MaGV = ''.obs;
 
   @override
   void onInit() {
-    listenToDocumentChanges();
+    getMaGV();
     getUserData();
     super.onInit();
   }
@@ -32,6 +34,13 @@ class HomeController extends GetxController {
   @override
   void onClose() {
     super.onClose();
+  }
+
+  Future<void> getMaGV() async{
+    // Lưu trữ một giá trị
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    MaGV.value = prefs.getString('MaGV')!;
+    listenToDocumentChanges( MaGV.value );
   }
 
   Future<void> getUserData() async {
@@ -54,10 +63,10 @@ class HomeController extends GetxController {
     });
   }
 
-  void listenToDocumentChanges() {
+  void listenToDocumentChanges(String MaGV) {
       firestoreInstance
       .collection("Config")
-      .where('MaGV', isEqualTo: 'Hoang')
+      .where('MaGV', isEqualTo: MaGV)
       .where('mahocphan.MaHocPhan', isEqualTo: 'MaHocPhan')
       .snapshots()
       .listen((QuerySnapshot querySnapshot) {
@@ -102,5 +111,7 @@ void addData() async {
     print('Lỗi khi thêm dữ liệu: $e');
   }
 }
+
+
 
 }

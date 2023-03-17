@@ -6,8 +6,9 @@ class DeviceModel {
   final Uint8List value;
   final String? name;
   final String? time;
+  final String? magv;
 
-  DeviceModel({required this.title, required this.value,this.name,this.time});
+  DeviceModel({required this.title, required this.value,this.name,this.time,this.magv});
 
   @override
   bool operator ==(Object other) =>

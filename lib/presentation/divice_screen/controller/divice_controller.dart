@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:app_mobile_doan/presentation/home_screen/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -26,6 +27,7 @@ class DiviceController extends GetxController {
   RxList<DeviceModel> lancuoi = <DeviceModel>[].obs;
   RxList<DeviceModel> uniqueDevices = <DeviceModel>[].obs;
   final MyDb mydb = MyDb();
+  final homeController = Get.find<HomeController>();
   final random = Random();
 
   @override
@@ -70,7 +72,7 @@ class DiviceController extends GetxController {
   void listenToDocumentChanges(String doc) {
       firestoreInstance
         .collection("Config")
-        .where('MaGV', isEqualTo: 'Hoang')
+        .where('MaGV', isEqualTo: homeController.MaGV.value)
         .where('mahocphan.MaHocPhan', isEqualTo: 'MaHocPhan')
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
@@ -108,13 +110,13 @@ class DiviceController extends GetxController {
   Future<void> saveDatabase(List<DeviceModel> listData) async{
     print('HoangNH: luu');
       for(DeviceModel e in listData) {
-        if(e.name != '' && e.time != '' && e.time != '' && e.value.isNotEmpty){
+        if(e.name != '' && e.time != '' && e.time != '' && e.value.isNotEmpty && e.magv != ''){
           final Directory directory = await getTemporaryDirectory();
           final File file = File('${directory.path}/image${random.nextInt(1000)}.jpg');
           await file.writeAsBytes(e.value);
           await mydb.db.rawInsert(
-            "INSERT INTO Attendance (name, masv, time, image) VALUES (?, ?, ?,?);",
-            [e.name, e.title, e.time,file.path]);
+            "INSERT INTO Attendance (name, masv, time, image, magv) VALUES (?, ?, ?, ?, ?);",
+            [e.name, e.title, e.time,file.path,e.magv]);
         }
       }
     uniqueDevices.clear();
