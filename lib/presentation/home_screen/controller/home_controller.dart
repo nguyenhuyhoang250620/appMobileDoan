@@ -15,6 +15,8 @@ class HomeController extends GetxController {
   var test = false.obs;
   var test1 = false.obs;
   Uint8List? image;
+  var siso = 0.obs;
+
   @override
   void onInit() {
     listenToDocumentChanges();
@@ -51,23 +53,21 @@ class HomeController extends GetxController {
       print(event);
     });
   }
-  
 
   void listenToDocumentChanges() {
-    firestoreInstance
-        .collection("User")
-        .doc("132")
-        .snapshots()
-        .listen((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        if ((documentSnapshot.data() as Map)['GioiTinh'] == 'true') {
-          test.value = true;
-        } else {
-          test.value = false;
-        }
+      firestoreInstance
+      .collection("Config")
+      .where('MaGV', isEqualTo: 'Hoang')
+      .where('mahocphan.MaHocPhan', isEqualTo: 'MaHocPhan')
+      .snapshots()
+      .listen((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final documentSnapshot = querySnapshot.docs.first;
+        List data =(documentSnapshot.data() as Map)['danhsach'];
+        siso.value = data.length;
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {
-        print("Document does not exist on the database");
+        print("Document does not exist in the database");
       }
     });
   }

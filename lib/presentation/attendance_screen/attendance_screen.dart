@@ -1,12 +1,18 @@
+import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:app_mobile_doan/core/app_export.dart';
 import 'package:app_mobile_doan/core/utils/constants.dart';
 import 'package:app_mobile_doan/presentation/attendance_screen/attendance_controller.dart';
+import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 class AttendanceScreen extends GetWidget<AttendanceController>{
+  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('Config');
@@ -80,7 +86,7 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
                         ],
                       ),
                     ),
-                    Text("Sỹ số lớp : 22/30, Vắng 2"),
+                    Obx(() => Text("Sỹ số lớp : ${controller.comat.value.toString()}/${homeController.siso.value.toString()}, Vắng ${homeController.siso.value-controller.comat.value}"),),
                     TextButton(
                         onPressed: () {
                           Get.dialog(
@@ -106,96 +112,79 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
                                       ),
                                       Expanded(
                                         flex: 9,
-                                        child:StreamBuilder<QuerySnapshot>(
-                                          stream: users.snapshots(),
-                                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                            if (snapshot.hasError) {
-                                              return Text('Something went wrong');
-                                            }
-
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return Text("Loading");
-                                            }
-
-                                            return new ListView(
-                                              children: snapshot.data!.docs.asMap().entries.map((entry) {
-                                              int index = entry.key + 1-1;
-                                              DocumentSnapshot document = entry.value;
-                                                return Container(
-                                                height: 80,
-                                                margin: EdgeInsets.all(10),
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(color: Colors.black),
-                                                    borderRadius: BorderRadius.circular(8.0)),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: Container(
-                                                        padding: EdgeInsets.all(appPadding/2),
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(8.0),
-                                                          border: Border.all(color: Colors.white, width: 1),
-                                                        ),
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(8.0),
-                                                          child: FadeInImage(
-                                                                placeholder: AssetImage('assets/images/image_not_found.png'),
-                                                                image: NetworkImage(
-                                                                  '${(document.data() as Map)["url"].toString()}',
-                                                                  scale: 1.0
+                                        child:ListView.builder(
+                                          itemCount: controller.listEmployeeAttendance.length,
+                                          itemBuilder: (context, index) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: darkTextColor),
+                                                borderRadius: BorderRadius.circular(8.0)
+                                              ),
+                                              margin: EdgeInsets.all(appPadding),
+                                              padding: EdgeInsets.all(appPadding),
+                                              child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Text("${controller.listEmployeeAttendance.value[index].name}",style: AppStyle.txtCartTitle,),
+                                                          RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                TextSpan(
+                                                                  text: 'Mã số sinh viên : ',
+                                                                  style: AppStyle.txtContentCard
                                                                 ),
-                                                                imageErrorBuilder: (context, error, stackTrace) => Icon(
-                                                                  Icons.person,
-                                                                  color: darkTextColor,
-                                                                  size: 40,
+                                                                TextSpan(
+                                                                  text: '${controller.listEmployeeAttendance.value[index].masv}',
+                                                                  style: AppStyle.txtContentCard.copyWith(color: blue)
                                                                 ),
-                                                                fit: BoxFit.cover,
-                                                                height: 100,
-                                                                width: 10,
-                                                              ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 7,
-                                                      child: Container(
-                                                        padding: EdgeInsets.symmetric(vertical: 20,horizontal: 5),
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: [
-                                                            Text("${(document.data() as Map)['danhsach'][index]["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
-                                                            RichText(
-                                                              text: TextSpan(
-                                                                children: [
-                                                                  TextSpan(
-                                                                    text: 'MSV: ',
-                                                                    style: AppStyle.txtContentCard
-                                                                  ),
-                                                                  TextSpan(
-                                                                    text: '${(document.data() as Map)['danhsach'][index]["MaSV"].toString()}',
-                                                                    style: AppStyle.txtContentCard.copyWith(color: blue)
-                                                                  ),
-                                                                ],
-                                                              ),
+                                                              ],
                                                             ),
-                                                          ],
-                                                        ),
-                                                      ),
+                                                          ),
+                                                          RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                TextSpan(
+                                                                  text: 'Thời gian vào : ',
+                                                                  style: AppStyle.txtContentCard
+                                                                ),
+                                                                TextSpan(
+                                                                  text: '${controller.listEmployeeAttendance.value[index].timeIn}',
+                                                                  style: AppStyle.txtContentCard.copyWith(color: green)
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Obx(() => controller.listEmployeeAttendance.value[index].timeIn.contains(controller.listEmployeeAttendance.value[index].timeOut)
+                                                          ?RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                TextSpan(
+                                                                  text: 'Thời gian ra : ',
+                                                                  style: AppStyle.txtContentCard
+                                                                ),
+                                                                TextSpan(
+                                                                  text: '-',
+                                                                  style: AppStyle.txtContentCard.copyWith(color: red),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ):RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                TextSpan(
+                                                                  text: 'Thời gian ra : ',
+                                                                  style: AppStyle.txtContentCard
+                                                                ),
+                                                                TextSpan(
+                                                                  text: '${controller.listEmployeeAttendance.value[index].timeOut}',
+                                                                  style: AppStyle.txtContentCard.copyWith(color: red),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),)
+                                                      ],
                                                     ),
-                                                    Container(
-                                                      width: 10,
-                                                      decoration: BoxDecoration(
-                                                        color: cardA,
-                                                        borderRadius: BorderRadius.only(topRight: Radius.circular(6.0),bottomRight: Radius.circular(6.0))
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                              }).toList(),
                                             );
                                           },
                                         )
@@ -212,67 +201,68 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
           ),
           Expanded(
             flex: 8,
-            child:StreamBuilder<QuerySnapshot>(
-              stream: users.snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Something went wrong');
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text("Loading");
-                }
-
-                return new ListView(
-                  children:  snapshot.data!.docs.asMap().entries.map((entry) {
-                  int index = entry.key + 1-1;
-                  DocumentSnapshot document = entry.value;
-                    return Container(
-                    height: 100,
-                    width: Get.width,
-                    margin: EdgeInsets.all(10),
+            child:Obx(() =>controller.isGetdata.value
+              ? controller.listEmployeeAttendance.isNotEmpty
+              ?ListView.builder(
+                itemCount: controller.listEmployeeAttendance.length,
+                itemBuilder: (context, index) {
+                  return Container(
                     decoration: BoxDecoration(
-                        border: Border.all(color: darkTextColor),
-                        borderRadius: BorderRadius.circular(8.0)),
+                      border: Border.all(color: darkTextColor),
+                      borderRadius: BorderRadius.circular(8.0)
+                    ),
+                    margin: EdgeInsets.all(appPadding),
+                    padding: EdgeInsets.all(appPadding),
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 2,
-                          child: Container(
-                              padding: EdgeInsets.all(appPadding),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                border: Border.all(color: Colors.white, width: 1),
+                          flex: 3,
+                          child: InkWell(
+                            onTap: () {
+                              Get.dialog(Dialog(
+                                child:Container(
+                                  color: transparent,
+                                  height: 400,
+                                  width: 200,
+                                  child: Transform.rotate(
+                                    angle: pi/2,
+                                    child:Image(
+                                      image: FileImage(File('${controller.listEmployeeAttendance.value[index].image}')),
+                                    ) ,
+                                  ),
+                                ) ,
+                              ));
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(appPadding),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(color: Colors.white, width: 1),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child:Obx(() => controller.listEmployeeAttendance.value[index].image != ''?
+                                Container(
+                                  height: 100,
+                                  child: Transform.rotate(
+                                    angle: pi/2,
+                                    child:Image(
+                                      image: FileImage(File('${controller.listEmployeeAttendance.value[index].image}')),
+                                    ) ,
+                                  ),
+                                )
+                                :Container(),)
+                                ),
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: FadeInImage(
-                                      placeholder: AssetImage('assets/images/image_not_found.png'),
-                                      image: NetworkImage(
-                                        '${(document.data() as Map)['danhsach'][index]["url"].toString()}',
-                                        scale: 1.0
-                                      ),
-                                      imageErrorBuilder: (context, error, stackTrace) => Icon(
-                                        Icons.person,
-                                        color: darkTextColor,
-                                        size: 40,
-                                      ),
-                                      fit: BoxFit.cover,
-                                      height: 100,
-                                      width: 10,
-                                    ),
-                              ),
-                            ),
+                          ),
                         ),
                         Expanded(
                           flex: 7,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 10,horizontal: 5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text("${(document.data() as Map)['danhsach'][index]["TenSV"].toString()}",style: AppStyle.txtCartTitle,),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                               Text("${controller.listEmployeeAttendance.value[index].name}",style: AppStyle.txtCartTitle,),
                                  RichText(
                                   text: TextSpan(
                                     children: [
@@ -281,7 +271,7 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
                                         style: AppStyle.txtContentCard
                                       ),
                                       TextSpan(
-                                        text: '${(document.data() as Map)["danhsach"][index]["MaSV"].toString()}',
+                                        text: '${controller.listEmployeeAttendance.value[index].masv}',
                                         style: AppStyle.txtContentCard.copyWith(color: blue)
                                       ),
                                     ],
@@ -295,13 +285,14 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
                                         style: AppStyle.txtContentCard
                                       ),
                                       TextSpan(
-                                        text: '7:30',
+                                        text: '${controller.listEmployeeAttendance.value[index].timeIn}',
                                         style: AppStyle.txtContentCard.copyWith(color: green)
                                       ),
                                     ],
                                   ),
                                 ),
-                                RichText(
+                                Obx(() => controller.listEmployeeAttendance.value[index].timeIn.contains(controller.listEmployeeAttendance.value[index].timeOut)
+                                ?RichText(
                                   text: TextSpan(
                                     children: [
                                       TextSpan(
@@ -309,30 +300,35 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
                                         style: AppStyle.txtContentCard
                                       ),
                                       TextSpan(
-                                        text: '7:30',
+                                        text: '-',
+                                        style: AppStyle.txtContentCard.copyWith(color: red),
+                                      )
+                                    ],
+                                  ),
+                                ):RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Thời gian ra : ',
+                                        style: AppStyle.txtContentCard
+                                      ),
+                                      TextSpan(
+                                        text: '${controller.listEmployeeAttendance.value[index].timeOut}',
                                         style: AppStyle.txtContentCard.copyWith(color: red),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
+                                ),)
+                            ],
                           ),
-                        ),
-                        Container(
-                            width: 10,
-                            decoration: BoxDecoration(
-                              color: cardA,
-                              borderRadius: BorderRadius.only(topRight: Radius.circular(6.0),bottomRight: Radius.circular(6.0))
-                            ),
-                          )
+                        )
                       ],
-                    ),
+                    )
                   );
-                  }).toList(),
-                );
-              },
-            )
+                },
+              )
+            :Center(child: Text('Không có dữ liệu'),)
+          :Center(child: CircularProgressIndicator(color: darkTextColor),))
           )
         ],
       ),

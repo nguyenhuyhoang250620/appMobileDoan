@@ -20,6 +20,10 @@ class DiviceScreen extends StatefulWidget {
 }
 
 class _DiviceState extends State<DiviceScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
   String barcode = 'Tap  to scan';
   var color = "1".obs;
   final controller = Get.find<DiviceController>();
@@ -34,7 +38,10 @@ class _DiviceState extends State<DiviceScreen> {
         backgroundColor: bgColor,
         actions: [
           IconButton(onPressed: () {
-            Get.toNamed(AppRoutes.homeScreen);
+            controller.saveDatabase(controller.uniqueDevices);
+          }, icon: Icon(Icons.save,color: darkTextColor,size: 25,)),
+          IconButton(onPressed: () {
+            Get.offAndToNamed(AppRoutes.homeScreen);
           }, icon: Icon(Icons.close,color: darkTextColor,size: 25,))
         ],
       ),
@@ -140,7 +147,7 @@ class _DiviceState extends State<DiviceScreen> {
                               ),
                               Expanded(
                                 flex: 5,
-                                child: ListView(
+                                child: Column(
                                   children: [
                                     Obx(() => Text(
                                       '${controller.uniqueDevices.value[index].name}'),),

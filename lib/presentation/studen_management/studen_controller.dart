@@ -7,6 +7,7 @@ class StudenController extends GetxController{
   final firestoreInstance = FirebaseFirestore.instance;
   CollectionReference phongHocCollection = FirebaseFirestore.instance.collection('Config');
   List<User> getEmployeeUser = <User>[].obs;
+  var siso = 0.obs;
   @override
   void onInit() {
     getUserData();
@@ -19,6 +20,7 @@ class StudenController extends GetxController{
     List<DocumentSnapshot> documents = querySnapshot.docs;
     documents.forEach((document) {
       List<dynamic> data = (document.data() as Map)['danhsach'];
+        siso.value = data.length;
       // List<User> myList = data.values.map((value) => User.fromJson(value)).toList();
       // print('HoangNH danhsach:${data.runtimeType}');
       List<User> myList = data.map((item) => User.fromJson(item)).toList();

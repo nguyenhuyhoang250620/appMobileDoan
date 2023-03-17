@@ -107,7 +107,7 @@ class StudenManagement extends GetWidget<StudenController>{
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     return Container(
-                    height: 100,
+                    height: 150,
                     width: Get.width,
                     margin: EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -116,7 +116,7 @@ class StudenManagement extends GetWidget<StudenController>{
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 2,
+                          flex: 3,
                           child: Container(
                               padding: EdgeInsets.all(appPadding),
                               decoration: BoxDecoration(
@@ -137,7 +137,7 @@ class StudenManagement extends GetWidget<StudenController>{
                                         size: 40,
                                       ),
                                       fit: BoxFit.cover,
-                                      height: 100,
+                                      height: 150,
                                       width: 10,
                                     ),
                               ),
@@ -170,11 +170,11 @@ class StudenManagement extends GetWidget<StudenController>{
                                   text: TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: 'Thời gian vào : ',
+                                        text: 'Khoá : ',
                                         style: AppStyle.txtContentCard
                                       ),
                                       TextSpan(
-                                        text: '7:30',
+                                        text: '${data[index]['Khoa']}',
                                         style: AppStyle.txtContentCard.copyWith(color: green)
                                       ),
                                     ],
@@ -184,11 +184,25 @@ class StudenManagement extends GetWidget<StudenController>{
                                   text: TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: 'Thời gian ra : ',
+                                        text: 'Email : ',
                                         style: AppStyle.txtContentCard
                                       ),
                                       TextSpan(
-                                        text: '7:30',
+                                        text: '${data[index]['Email']}',
+                                        style: AppStyle.txtContentCard.copyWith(color: red),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Sđt : ',
+                                        style: AppStyle.txtContentCard
+                                      ),
+                                      TextSpan(
+                                        text: '${data[index]['SoDT']}',
                                         style: AppStyle.txtContentCard.copyWith(color: red),
                                       ),
                                     ],
