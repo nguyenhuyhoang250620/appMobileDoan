@@ -29,11 +29,12 @@ class DiviceController extends GetxController {
   final MyDb mydb = MyDb();
   final homeController = Get.find<HomeController>();
   final random = Random();
-
+  final CollectionReference usersRef =
+      FirebaseFirestore.instance.collection('Attendance');
   @override
   void onInit() {
     mydb.open();
-     print('HoangNH: open');
+    print('HoangNH: open');
     getUserData();
     super.onInit();
   }
@@ -69,56 +70,108 @@ class DiviceController extends GetxController {
     });
   }
 
-  void listenToDocumentChanges(String doc) {
-      firestoreInstance
+  Future<void> listenToDocumentChanges(String doc) async {
+    await firestoreInstance
         .collection("Config")
         .where('MaGV', isEqualTo: homeController.MaGV.value)
-        .where('mahocphan.MaHocPhan', isEqualTo: 'MaHocPhan')
+        // .where('mahocphan.MaHocPhan', isEqualTo: 'MaHocPhan')
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
-        if (querySnapshot.docs.isNotEmpty) {
-          final documentSnapshot = querySnapshot.docs.first;
-          List data =(documentSnapshot.data() as Map)['danhsach'];
-            data.map((e){
-              print('HoangNH: ${e['MaSV']}');
-              if(doc == e['MaSV']){
-                print('HoangNH: vaokhong');
-                firestoreInstance
-                    .collection("User")
-                    .doc(doc)
-                    .snapshots()
-                    .listen((DocumentSnapshot documentSnapshot) {
-                  if (documentSnapshot.exists) {
-                    TenSV.value = '${(documentSnapshot.data() as Map)["TenSV"]}';
-                    time.value = DateTime.now().toString();
-                    // Cập nhật dữ liệu trong ứng dụng của bạn
-                  } else {
-                    print("Document does not exist on the database");
-                  }
-                });
+      if (querySnapshot.docs.isNotEmpty) {
+        final documentSnapshot = querySnapshot.docs.first;
+        List data = (documentSnapshot.data() as Map)['danhsach'];
+        data.map((e) {
+          print('HoangNH: ${e['MaSV']}');
+          if (doc == e['MaSV']) {
+            print('HoangNH: vaokhong');
+            firestoreInstance
+                .collection("User")
+                .doc(doc)
+                .snapshots()
+                .listen((DocumentSnapshot documentSnapshot) {
+              if (documentSnapshot.exists) {
+                TenSV.value = '${(documentSnapshot.data() as Map)["TenSV"]}';
+                time.value = DateTime.now().toString();
+                // Cập nhật dữ liệu trong ứng dụng của bạn
+              } else {
+                print("Document does not exist on the database");
               }
-
-            }).toList();
-          // Cập nhật dữ liệu trong ứng dụng của bạn
-        } else {
-          print("Document does not exist in the database");
-        }
-      });
+            });
+          } else {
+            time.value = '';
+            TenSV.value = '';
+          }
+        }).toList();
+        // Cập nhật dữ liệu trong ứng dụng của bạn
+      } else {
+        print("Document does not exist in the database");
+      }
+    });
   }
 
-
-  Future<void> saveDatabase(List<DeviceModel> listData) async{
-    print('HoangNH: luu');
-      for(DeviceModel e in listData) {
-        if(e.name != '' && e.time != '' && e.time != '' && e.value.isNotEmpty && e.magv != ''){
-          final Directory directory = await getTemporaryDirectory();
-          final File file = File('${directory.path}/image${random.nextInt(1000)}.jpg');
-          await file.writeAsBytes(e.value);
-          await mydb.db.rawInsert(
+  Future<void> saveDatabase(List<DeviceModel> listData) async {
+    for (DeviceModel e in listData) {
+      if (e.name != '' &&
+          e.time != '' &&
+          e.time != '' &&
+          e.value.isNotEmpty &&
+          e.magv != '') {
+        final Directory directory = await getTemporaryDirectory();
+        final File file =
+            File('${directory.path}/image${random.nextInt(1000)}.jpg');
+        await file.writeAsBytes(e.value);
+        await mydb.db.rawInsert(
             "INSERT INTO Attendance (name, masv, time, image, magv) VALUES (?, ?, ?, ?, ?);",
-            [e.name, e.title, e.time,file.path,e.magv]);
-        }
+            [e.name, e.title, e.time, file.path, e.magv]);
+        // await addUser(e.magv!, 'an_toan', '101B1', e.time!, e.time!,
+        //     e.name!, e.title);
+        await addDiemDanh(e.magv!, 'an_toan', e.title, e.name!, e.time!);
       }
+    }
     uniqueDevices.clear();
+  }
+
+  Future<void> addUser(String MaGV, String MaHocPhan, String MaPhong,
+      String CheckIn, String CheckOunt, String MaSV, String TenSV) {
+    return usersRef
+        .add({
+          'MaGV': MaGV,
+          'MaHocPhan': MaHocPhan,
+          'MaPhong': 'MaPhong',
+          'DiemDanh': [
+            {
+              'CheckIn': CheckIn,
+              'CheckOut': CheckOunt,
+              'MaSV': MaSV,
+              'TenSV': TenSV
+            }
+          ]
+        })
+        .then((value) => print('User added'))
+        .catchError((error) => print('Failed to add user: $error'));
+  }
+
+  Future<void> addDiemDanh(
+    String MaGV,
+    String MaHocPhan,
+    String MaSV,
+    String TenSV,
+    String ThoiGian,
+  ) async {
+    final QuerySnapshot snapshot = await usersRef
+        .where('MaGV', isEqualTo: MaGV)
+        .where('MaHocPhan', isEqualTo: MaHocPhan)
+        .get();
+    final DocumentReference docRef = snapshot.docs.first.reference;
+    final Map<String, dynamic> newData = {
+      'DiemDanh': FieldValue.arrayUnion([
+        {
+          'MaSV': MaSV,
+          'TenSV': TenSV,
+          'ThoiGian': ThoiGian,
+        }
+      ])
+    };
+    return docRef.update(newData);
   }
 }

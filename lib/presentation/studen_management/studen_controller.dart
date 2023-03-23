@@ -10,21 +10,6 @@ class StudenController extends GetxController{
   var siso = 0.obs;
   @override
   void onInit() {
-    getUserData();
     super.onInit();
-  }
-  Future<void> getUserData() async {
-    CollectionReference collectionReference =
-        firestoreInstance.collection("Config");
-    QuerySnapshot querySnapshot = await collectionReference.where('MaGV',isEqualTo: 'giangvien@gmail.com').get();
-    List<DocumentSnapshot> documents = querySnapshot.docs;
-    documents.forEach((document) {
-      List<dynamic> data = (document.data() as Map)['danhsach'];
-        siso.value = data.length;
-      // List<User> myList = data.values.map((value) => User.fromJson(value)).toList();
-      // print('HoangNH danhsach:${data.runtimeType}');
-      List<User> myList = data.map((item) => User.fromJson(item)).toList();
-      getEmployeeUser = myList;
-    });
   }
 }

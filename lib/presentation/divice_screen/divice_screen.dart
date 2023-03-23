@@ -24,6 +24,7 @@ class _DiviceState extends State<DiviceScreen> {
   void initState() {
     super.initState();
   }
+
   String barcode = 'Tap  to scan';
   var color = "1".obs;
   final controller = Get.find<DiviceController>();
@@ -35,15 +36,31 @@ class _DiviceState extends State<DiviceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Điểm danh',style: AppStyle.txtInterMedium18.copyWith(color: darkTextColor,fontWeight: FontWeight.bold),),
+        title: Text(
+          'Điểm danh',
+          style: AppStyle.txtInterMedium18
+              .copyWith(color: darkTextColor, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: bgColor,
         actions: [
-          IconButton(onPressed: () {
-            controller.saveDatabase(controller.uniqueDevices);
-          }, icon: Icon(Icons.save,color: darkTextColor,size: 25,)),
-          IconButton(onPressed: () {
-            Get.offAndToNamed(AppRoutes.homeScreen);
-          }, icon: Icon(Icons.close,color: darkTextColor,size: 25,))
+          IconButton(
+              onPressed: () {
+                controller.saveDatabase(controller.uniqueDevices);
+              },
+              icon: Icon(
+                Icons.save,
+                color: darkTextColor,
+                size: 25,
+              )),
+          IconButton(
+              onPressed: () {
+                Get.offAndToNamed(AppRoutes.homeScreen);
+              },
+              icon: Icon(
+                Icons.close,
+                color: darkTextColor,
+                size: 25,
+              ))
         ],
       ),
       body: Center(
@@ -51,21 +68,22 @@ class _DiviceState extends State<DiviceScreen> {
           children: [
             Expanded(
                 flex: 6,
-                child: Obx(() => AiBarcodeScanner(
+                child: Obx(
+                  () => AiBarcodeScanner(
                     validateText: '',
-                    onScannerStarted: (p0) {
-                    }, // link to be validated
+                    onScannerStarted: (p0) {}, // link to be validated
                     validateType: ValidateType.contains,
                     // canPop: true,
                     // allowDuplicates: true,
                     errorColor: Colors.red,
-                    successColor: controller.test1.value
-                        ? Colors.red
-                        : Colors.green,
-                    
+                    successColor:
+                        controller.test1.value ? Colors.red : Colors.green,
+
                     onScan: (String value) {
                       debugPrint(value);
+
                       controller.MaSV.value = value;
+                    
                       // listnua.add(value);
                       // controller.listtest.value =
                       //     listnua.toSet().toList();
@@ -73,28 +91,28 @@ class _DiviceState extends State<DiviceScreen> {
                       // color.value = "2";
                       controller.listenToDocumentChanges(value);
                       controller.test1.value = false;
-
                       Future.delayed(Duration(milliseconds: 2500), () {
                         controller.test1.value = true;
                       });
                     },
                     onDetect: (p0) {
-                      if(controller.MaSV.isNotEmpty){
+                      if (controller.MaSV.isNotEmpty) {
                         controller.image = p0.image;
-                      DeviceModel model = DeviceModel(
-                          time: controller.time.value,
-                          name: controller.TenSV.value,
-                          title: controller.MaSV.value,
-                          value: controller.image!,
-                          magv: homeController.MaGV.value
-                          );
-                      controller.lancuoi.value.add(model);
-                      List<DeviceModel> devices =
-                          controller.lancuoi.value;
-                      controller.uniqueDevices.value = devices
-                          .where((device) => device.title != null)
-                          .toSet()
-                          .toList();
+                        Future.delayed(Duration(milliseconds: 500), () {
+                        DeviceModel model = DeviceModel(
+                            time: controller.time.value,
+                            name: controller.TenSV.value,
+                            title: controller.MaSV.value,
+                            value: controller.image!,
+                            magv: homeController.MaGV.value);
+                        controller.lancuoi.value.add(model);
+                        List<DeviceModel> devices = controller.lancuoi.value;
+                        controller.uniqueDevices.value = devices
+                            .where((device) => device.title != null)
+                            .toSet()
+                            .toList();
+                        });
+                        
                       }
                     },
                     controller: MobileScannerController(
@@ -104,7 +122,8 @@ class _DiviceState extends State<DiviceScreen> {
                       returnImage: true,
                     ),
                     borderColor: Colors.red,
-                  ),)),
+                  ),
+                )),
             Expanded(
                 flex: 4,
                 child: Obx(() => ListView.builder(
@@ -119,48 +138,51 @@ class _DiviceState extends State<DiviceScreen> {
                           child: Row(
                             children: [
                               Expanded(
-                                flex: 5,
-                                child:Container(
-                                  height: 50,
-                                  width: 150,
-                                  child: InkWell(
-                                    onTap: () {
-                                      Get.dialog(Dialog(
-                                        backgroundColor: Colors.transparent,
-                                        child: Transform.rotate(
+                                  flex: 5,
+                                  child: Container(
+                                    height: 50,
+                                    width: 150,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Get.dialog(Dialog(
+                                          backgroundColor: Colors.transparent,
+                                          child: Transform.rotate(
                                             angle: pi / 2,
                                             child: Image.memory(
                                                 fit: BoxFit.cover,
-                                                filterQuality: FilterQuality.high,
-                                                controller
-                                                    .uniqueDevices.value[index].value),
+                                                filterQuality:
+                                                    FilterQuality.high,
+                                                controller.uniqueDevices
+                                                    .value[index].value),
                                           ),
-                                      ));
-                                    },
-                                    child: Transform.rotate(
-                                      angle: pi / 2,
-                                      child: Image.memory(
-                                          fit: BoxFit.contain,
-                                          filterQuality: FilterQuality.high,
-                                          controller
-                                              .uniqueDevices.value[index].value),
+                                        ));
+                                      },
+                                      child: Transform.rotate(
+                                        angle: pi / 2,
+                                        child: Image.memory(
+                                            fit: BoxFit.contain,
+                                            filterQuality: FilterQuality.high,
+                                            controller.uniqueDevices
+                                                .value[index].value),
+                                      ),
                                     ),
-                                  ),
-                                )
-                              ),
+                                  )),
                               Expanded(
-                                flex: 5,
-                                child: Column(
-                                  children: [
-                                    Obx(() => Text(
-                                      '${controller.uniqueDevices.value[index].name}'),),
-                                    Text(
-                                      '${controller.uniqueDevices.value[index].title}'),
-                                    Obx(() => Text(
-                                      '${controller.uniqueDevices.value[index].time}'),)
-                                  ],
-                                )
-                              )
+                                  flex: 5,
+                                  child: Column(
+                                    children: [
+                                      Obx(
+                                        () => Text(
+                                            '${controller.uniqueDevices.value[index].name}'),
+                                      ),
+                                      Text(
+                                          '${controller.uniqueDevices.value[index].title}'),
+                                      Obx(
+                                        () => Text(
+                                            '${controller.uniqueDevices.value[index].time}'),
+                                      )
+                                    ],
+                                  ))
                             ],
                           ),
                         );

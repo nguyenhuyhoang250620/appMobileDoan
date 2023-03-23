@@ -23,7 +23,7 @@ class AppRoutes {
 
   static String diviceScreen = '/divice_screen';
 
-  static String initialRoute = '/login_screen';
+  static String initialRoute = '/home_screen';
 
   static String attendanceScreen = '/attendance_screen';
 

@@ -89,7 +89,7 @@ class StudenManagement extends GetWidget<StudenController>{
           Expanded(
             flex: 8,
             child:StreamBuilder<QuerySnapshot>(
-              stream: controller.phongHocCollection.where('MaGV',isEqualTo: homeController.MaGV.value).where('mahocphan.MaHocPhan',isEqualTo: 'MaHocPhan').snapshots(),
+              stream: controller.phongHocCollection.where('MaGV',isEqualTo: homeController.MaGV.value).where('mahocphan.MaHocPhan',isEqualTo:'an_ninh_mang').snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return Text('Something went wrong');

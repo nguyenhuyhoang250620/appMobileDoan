@@ -10,19 +10,21 @@ import '/core/app_export.dart';
 class HomeController extends GetxController {
   RxInt selectedIndex = 0.obs;
   final firestoreInstance = FirebaseFirestore.instance;
-  CollectionReference phongHocCollection = FirebaseFirestore.instance.collection('Config');
+  CollectionReference phongHocCollection =
+      FirebaseFirestore.instance.collection('Config');
   List<User> getEmployeeUser = <User>[].obs;
   var MaSV = "".obs;
   var test = false.obs;
   var test1 = false.obs;
   Uint8List? image;
   var siso = 0.obs;
-  var MaGV = ''.obs;
+  var MaGV = 'phan_van_tien'.obs;
+  var MaHocPhan = ''.obs;
+  RxList danh_sach_mon = [].obs;
 
   @override
   void onInit() {
     getMaGV();
-    getUserData();
     super.onInit();
   }
 
@@ -36,43 +38,25 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
-  Future<void> getMaGV() async{
+  Future<void> getMaGV() async {
     // Lưu trữ một giá trị
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    MaGV.value = prefs.getString('MaGV')!;
-    listenToDocumentChanges( MaGV.value );
-  }
-
-  Future<void> getUserData() async {
-    CollectionReference collectionReference =
-        firestoreInstance.collection("User");
-    QuerySnapshot querySnapshot = await collectionReference.get();
-    List<DocumentSnapshot> documents = querySnapshot.docs;
-    documents.forEach((document) {
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      User user = User.fromJson(data);
-      getEmployeeUser.add(user);
-    });
-  }
-
-  Future<void> startBarcodeScanStream() async {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            '#ff6666', 'Cancel', true, ScanMode.DEFAULT)!
-        .listen((event) {
-      print(event);
-    });
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // MaGV.value = prefs.getString('MaGV')!;
+    attendanceDocument(MaGV.value,'');
+    listenToDocumentChanges(MaGV.value);
   }
 
   void listenToDocumentChanges(String MaGV) {
-      firestoreInstance
-      .collection("Config")
-      .where('MaGV', isEqualTo: MaGV)
-      .where('mahocphan.MaHocPhan', isEqualTo: 'MaHocPhan')
-      .snapshots()
-      .listen((QuerySnapshot querySnapshot) {
+    print("hoang ${MaGV}");
+    firestoreInstance
+        .collection("Config")
+        .where('MaGV', isEqualTo: MaGV)
+        // .where('mahocphan.MaHocPhan', isEqualTo: 'MaHocPhan')
+        .snapshots()
+        .listen((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         final documentSnapshot = querySnapshot.docs.first;
-        List data =(documentSnapshot.data() as Map)['danhsach'];
+        List data = (documentSnapshot.data() as Map)['danhsach'];
         siso.value = data.length;
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {
@@ -81,37 +65,45 @@ class HomeController extends GetxController {
     });
   }
 
-void addData() async {
-  try {
-    // tạo document mới với dữ liệu cần thêm vào
-    DocumentReference newDoc = await phongHocCollection.add({
-       "sv":[
-        {
-            "ten":"hoang"
+  void attendanceDocument(String MaGV, String ma_hoc_phan) {
+    print("hoang ${MaGV}");
+    FirebaseFirestore.instance
+        .collection("Attendance")
+        .where('MaGV', isEqualTo: MaGV)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        for (final doc in querySnapshot.docs) {
+          danh_sach_mon.add(doc['MaHocPhan']);
         }
-       ],
-       "phong":{
-            "tenphong":"phonga"
-       },
-       "mon":{
-            "tenmon":"tenmon"
-       },
-       "thoigian":{
-            "tenca":"tenca"
-       },
-       "giangvien":{
-            "tengv":"tengv"
-       },
-       "phongban":{
-            "tenphong":"tenphong"
-       }
+        if (ma_hoc_phan == '') {
+          MaHocPhan.value = danh_sach_mon.value.first;
+        } else {
+          MaHocPhan.value = ma_hoc_phan;
+        }
+        // Cập nhật dữ liệu trong ứng dụng của bạn
+      } else {
+        print("Document does not exist in the database");
+      }
     });
-    print('Thêm dữ liệu thành công: ${newDoc.id}');
-  } catch (e) {
-    print('Lỗi khi thêm dữ liệu: $e');
   }
-}
 
-
-
+  void addData() async {
+    try {
+      // tạo document mới với dữ liệu cần thêm vào
+      DocumentReference newDoc = await phongHocCollection.add({
+        "sv": [
+          {"ten": "hoang"}
+        ],
+        "phong": {"tenphong": "phonga"},
+        "mon": {"tenmon": "tenmon"},
+        "thoigian": {"tenca": "tenca"},
+        "giangvien": {"tengv": "tengv"},
+        "phongban": {"tenphong": "tenphong"}
+      });
+      print('Thêm dữ liệu thành công: ${newDoc.id}');
+    } catch (e) {
+      print('Lỗi khi thêm dữ liệu: $e');
+    }
+  }
 }

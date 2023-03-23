@@ -49,6 +49,7 @@ class LoginController extends GetxController {
       }
     }
   }
+  
   Future<void> logout() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.remove('MaGV'); 
