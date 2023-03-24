@@ -52,6 +52,7 @@ dependencies:
   syncfusion_flutter_charts: ^20.4.53
   table_calendar: ^3.0.8
   intl: ^0.17.0
+  flutter_multi_select_items: ^0.4.2
 dev_dependencies: 
   flutter_test: 
     sdk: flutter

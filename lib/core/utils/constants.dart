@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 const primaryColor = Color.fromRGBO(17, 159, 250, 1);
 const secondaryColor = Colors.white;
 const bgColor = Colors.white;
+final background= Color.fromARGB(255, 238, 235, 235);
 const textColor = Colors.grey;
 final backgroundTitleTable = Colors.grey.withOpacity(0.2);
 const lightTextColor = Colors.black26;

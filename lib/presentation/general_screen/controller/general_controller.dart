@@ -1,13 +1,13 @@
 import 'dart:typed_data';
-
 import 'package:app_mobile_doan/presentation/home_screen/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/general_model.dart';
 import '/core/app_export.dart';
 
-class HomeController extends GetxController {
+class GeneralController extends GetxController {
   RxInt selectedIndex = 0.obs;
   final firestoreInstance = FirebaseFirestore.instance;
   CollectionReference phongHocCollection =
@@ -20,11 +20,11 @@ class HomeController extends GetxController {
   var siso = 0.obs;
   var MaGV = 'phan_van_tien'.obs;
   var MaHocPhan = ''.obs;
-  RxList danh_sach_mon = [].obs;
+  List<MaHocPhanModel> danh_sach_mon = <MaHocPhanModel>[].obs;
 
   @override
   void onInit() {
-    // getMaGV();
+    getMaGV();
     super.onInit();
   }
 
@@ -42,7 +42,7 @@ class HomeController extends GetxController {
     // Lưu trữ một giá trị
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // MaGV.value = prefs.getString('MaGV')!;
-    attendanceDocument(MaGV.value,'');
+    attendanceDocument(MaGV.value);
   }
 
   void listenToDocumentChanges(String MaGV,String ma_hoc_phan) {
@@ -63,7 +63,7 @@ class HomeController extends GetxController {
     });
   }
 
-  void attendanceDocument(String MaGV, String ma_hoc_phan) {
+  void attendanceDocument(String MaGV) {
     print("hoang ${MaGV}");
     FirebaseFirestore.instance
         .collection("Attendance")
@@ -72,17 +72,35 @@ class HomeController extends GetxController {
         .then((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         for (final doc in querySnapshot.docs) {
-          danh_sach_mon.add(doc['MaHocPhan']);
-        }
-        if (ma_hoc_phan == '') {
-          MaHocPhan.value = danh_sach_mon.value.first;
-        } else {
-          MaHocPhan.value = ma_hoc_phan;
+          MaHocPhanModel model =  MaHocPhanModel(
+            MaHocPhan: doc['MaHocPhan'],
+            TenHocPhan: doc['TenHocPhan']
+          );
+          danh_sach_mon.add(model);
         }
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {
         print("Document does not exist in the database");
       }
     });
+  }
+
+  void addData() async {
+    try {
+      // tạo document mới với dữ liệu cần thêm vào
+      DocumentReference newDoc = await phongHocCollection.add({
+        "sv": [
+          {"ten": "hoang"}
+        ],
+        "phong": {"tenphong": "phonga"},
+        "mon": {"tenmon": "tenmon"},
+        "thoigian": {"tenca": "tenca"},
+        "giangvien": {"tengv": "tengv"},
+        "phongban": {"tenphong": "tenphong"}
+      });
+      print('Thêm dữ liệu thành công: ${newDoc.id}');
+    } catch (e) {
+      print('Lỗi khi thêm dữ liệu: $e');
+    }
   }
 }

@@ -6,6 +6,7 @@ import 'package:app_mobile_doan/presentation/calendar_event/calendart_binding.da
 import 'package:app_mobile_doan/presentation/charts_screen/charts_binding.dart';
 import 'package:app_mobile_doan/presentation/divice_screen/binding/divice_binding.dart';
 import 'package:app_mobile_doan/presentation/divice_screen/divice_screen.dart';
+import 'package:app_mobile_doan/presentation/general_screen/general_screen.dart';
 import 'package:app_mobile_doan/presentation/home_screen/home_screen.dart';
 import 'package:app_mobile_doan/presentation/home_screen/binding/home_binding.dart';
 import 'package:app_mobile_doan/presentation/studen_management/studen_binding.dart';
@@ -15,6 +16,7 @@ import 'package:app_mobile_doan/presentation/login_screen/binding/login_binding.
 import 'package:app_mobile_doan/presentation/login_screen/login_screen.dart';
 
 import '../presentation/charts_screen/charts_screen.dart';
+import '../presentation/general_screen/binding/general_binding.dart';
 
 class AppRoutes {
   static String loginScreen = '/login_screen';
@@ -23,7 +25,7 @@ class AppRoutes {
 
   static String diviceScreen = '/divice_screen';
 
-  static String initialRoute = '/home_screen';
+  static String initialRoute = '/general_screen';
 
   static String attendanceScreen = '/attendance_screen';
 
@@ -32,6 +34,8 @@ class AppRoutes {
   static String chartsScreen = '/charts_screen';
 
   static String calendarEvent = '/calendar_event';
+
+  static String generalScreen = '/general_screen';
 
   static List<GetPage> pages = [
     GetPage(
@@ -50,9 +54,9 @@ class AppRoutes {
     ),
     GetPage(
       name: initialRoute,
-      page: () => LoginScreen(),
+      page: () => GeneralScreen(),
       bindings: [
-        LoginBinding(),
+        GeneralBinding(),
       ],
     ),
     GetPage(
@@ -89,6 +93,14 @@ class AppRoutes {
       page: () => CalendarEvent(),
       bindings: [
         CalendarBinding(),
+      ],
+    ),
+
+    GetPage(
+      name: generalScreen,
+      page: () => GeneralScreen(),
+      bindings: [
+        GeneralBinding(),
       ],
     ),
   ];

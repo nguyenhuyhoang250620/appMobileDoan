@@ -1,4 +1,5 @@
 import 'package:app_mobile_doan/presentation/divice_screen/controller/divice_controller.dart';
+import 'package:app_mobile_doan/presentation/general_screen/controller/general_controller.dart';
 import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:app_mobile_doan/presentation/studen_management/studen_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,7 +11,7 @@ import 'package:multiselect/multiselect.dart';
 import '../../core/app_export.dart';
 import '../../core/utils/constants.dart';
 class StudenManagement extends GetWidget<StudenController>{
-  final homeController = Get.find<HomeController>();
+  final generalController = Get.find<GeneralController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +19,7 @@ class StudenManagement extends GetWidget<StudenController>{
       leading: IconButton(
         icon: Icon(Icons.arrow_back,color: darkTextColor,),
         onPressed: () {
-          Get.offAndToNamed(AppRoutes.homeScreen);
+          Get.toNamed(AppRoutes.homeScreen);
         },
       ),
       backgroundColor: Colors.white,
@@ -31,65 +32,27 @@ class StudenManagement extends GetWidget<StudenController>{
       width: Get.width,
       child: Column(
         children: [
-          Expanded(
-            flex: 2,
-            child: Container(
-                height: Get.height,
-                width: Get.width,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: Get.width,
-                      padding: EdgeInsets.only(left: appPadding*5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                            Text('Chọn thời gian', style: AppStyle.txtContentCard.copyWith(color: darkTextColor)),
-                            SizedBox(width: 10,),
-                            Icon(
-                                  Icons.edit_calendar_rounded,
-                                  color: Colors.blue,
-                                  size: 24.0,
-                                  semanticLabel: 'Xem lịch',
-                                ),
-                            SizedBox(width: 10,),
-                            Container(
-                                width: 150,
-                                child:DateTimePicker(
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                      type: DateTimePickerType.date,
-                                      dateMask: 'dd-MM-yyyy',
-                                      initialValue: DateTime.now().toString(),
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2100),
-                                      icon: const Icon(Icons.event, size: 24),
-                                      onChanged: (val) {
-                                        
-                                      },
-                                      // validator: (val) {
-                                      //   print(val);
-                                      //   vmsController.runNameFilter(val!);
-                                      //   return null;
-                                      // },
-                                    ),
-                              )  
-                            
-                        ],
-                      ),
-                    ),
-                  ],
-                )),
+          SizedBox(height: 30,),
+          Container(
+            height: 60,
+            child:Padding(
+                padding: EdgeInsets.symmetric(horizontal: appPadding),
+                child: Card(
+                  elevation: 6,
+                  child: Container(
+                    height: 70,
+                    width: Get.width,
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(appPadding),
+                    child: Text("Danh sách sinh viên",style: AppStyle.titleTop,),
+                  ),
+                ),
+              ), 
           ),
           Expanded(
             flex: 8,
             child:StreamBuilder<QuerySnapshot>(
-              stream: controller.phongHocCollection.where('MaGV',isEqualTo: homeController.MaGV.value).where('mahocphan.MaHocPhan',isEqualTo:'an_ninh_mang').snapshots(),
+              stream: controller.phongHocCollection.where('MaGV',isEqualTo: generalController.MaGV.value).where('mahocphan.MaHocPhan',isEqualTo:generalController.MaHocPhan.value).snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return Text('Something went wrong');
@@ -172,7 +135,7 @@ class StudenManagement extends GetWidget<StudenController>{
                                   text: TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: 'Khoá : ',
+                                        text: 'Khoa : ',
                                         style: AppStyle.txtContentCard
                                       ),
                                       TextSpan(
@@ -205,7 +168,7 @@ class StudenManagement extends GetWidget<StudenController>{
                                       ),
                                       TextSpan(
                                         text: '${data[index]['SoDT']}',
-                                        style: AppStyle.txtContentCard.copyWith(color: red),
+                                        style: AppStyle.txtContentCard.copyWith(color:orange ),
                                       ),
                                     ],
                                   ),

@@ -1,0 +1,57 @@
+import 'package:app_mobile_doan/core/utils/constants.dart';
+import 'package:app_mobile_doan/theme/app_style.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_utils/src/extensions/context_extensions.dart';
+
+class CustomButtonAlert extends StatelessWidget{
+  CustomButtonAlert({
+    this.onPressedDisable,
+    this.onPressedEnable,
+    this.titileDisable,
+    this.titileEnable
+  });
+  final VoidCallback? onPressedDisable;
+  final VoidCallback? onPressedEnable;
+  final String? titileDisable;
+  final String? titileEnable;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    backgroundColor: enableColor
+                  ),
+                onPressed: onPressedDisable,
+                child: Text('${titileDisable}',style: AppStyle.txtRobotoRegular16.copyWith(color:bgColor)),
+              ),
+            ),
+           Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    backgroundColor: colorButton
+                ),
+                onPressed: onPressedEnable,
+                child: Text('${titileEnable}',style: AppStyle.txtRobotoRegular16.copyWith(color: bgColor),),
+              ),
+            ),
+        ],
+      );
+  }
+
+}

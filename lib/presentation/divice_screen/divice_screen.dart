@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../general_screen/controller/general_controller.dart';
 import 'models/divice_model.dart';
 
 class DiviceScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _DiviceState extends State<DiviceScreen> {
   String barcode = 'Tap  to scan';
   var color = "1".obs;
   final controller = Get.find<DiviceController>();
-  final homeController = Get.find<HomeController>();
+  final generalController = Get.find<GeneralController>();
   final List<String> listnua = [];
   final List<Uint8List> listnuahay = [];
   final List<DeviceModel> landau = [];
@@ -104,7 +105,7 @@ class _DiviceState extends State<DiviceScreen> {
                             name: controller.TenSV.value,
                             title: controller.MaSV.value,
                             value: controller.image!,
-                            magv: homeController.MaGV.value);
+                            magv: generalController.MaGV.value);
                         controller.lancuoi.value.add(model);
                         List<DeviceModel> devices = controller.lancuoi.value;
                         controller.uniqueDevices.value = devices

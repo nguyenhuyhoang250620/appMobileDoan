@@ -1,8 +1,10 @@
 import 'package:app_mobile_doan/presentation/home_screen/models/home_model.dart';
 import 'package:app_mobile_doan/presentation/login_screen/controller/login_controller.dart';
+import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:multiselect/multiselect.dart';
 
 import '../../core/utils/constants.dart';
+import '../../widgets/custom_button_alert.dart';
 import 'controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:app_mobile_doan/core/app_export.dart';
@@ -26,28 +28,16 @@ class HomeScreen extends GetWidget<HomeController> {
               children: [
                 Container(
                   height: 60,
-                  color: darkTextColor.withOpacity(0.2),
+                  color:  darkTextColor.withOpacity(0.6),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Padding(
-                          padding: EdgeInsets.only(left: appPadding),
-                          child: Obx(
-                            () => Text(
-                              "Hii, ${controller.MaGV.value} 👋",
-                              style: AppStyle.titleTop,
-                            ),
-                          )),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: Icon(Icons.logout),
-                          onPressed: () {
-                            loginController.logout();
-                          },
-                        ),
-                      )
+                      IconButton(
+                        onPressed: () => Get.toNamed(AppRoutes.generalScreen), 
+                        icon: Icon(Icons.arrow_back,color: bgColor,)
+                      ),
+                      Text("Hệ thống điểm danh",style: AppStyle.titleTop.copyWith(color: bgColor),)
                     ],
                   ),
                 ),
@@ -56,72 +46,14 @@ class HomeScreen extends GetWidget<HomeController> {
                   color: darkTextColor,
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 30,
                 ),
-                Center(child: Text('Lựa chọn mã học phần')),
                 Expanded(
-                    flex: 1,
-                    child: Obx(
-                      () => controller.danh_sach_mon.value.isNotEmpty
-                          ? Container(
-                              height: Get.height,
-                              width: Get.width,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: appPadding, vertical: appPadding),
-                              child: DropdownButtonFormField(
-                                elevation: 4,
-
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.all(appPadding),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: darkTextColor, width: 2.0),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                isExpanded: true,
-                                // hint: const Text(
-                                //   'Select Your Gender',
-                                //   style: TextStyle(fontSize: 14),
-                                // ),
-                                icon: const Icon(
-                                  Icons.class_,
-                                  color: Colors.black45,
-                                ),
-                                iconSize: 30,
-                                value: controller.danh_sach_mon.value[0],
-                                items: controller.danh_sach_mon.value
-                                    .map((item) => DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Text(item,
-                                              style: AppStyle.titleTopPage),
-                                        ))
-                                    .toList(),
-                                validator: (value) {
-                                  if (value == null) {
-                                    return 'lbl_please_choose_time'.tr;
-                                  }
-                                },
-                                onChanged: (value) {
-                                  controller.attendanceDocument(
-                                      controller.MaGV.value, value.toString());
-                                },
-                                onSaved: (value) {
-                                  //selectedValue = value.toString();
-                                },
-                              ),
-                            )
-                          : Container(),
-                    )),
-                Expanded(
-                  flex: 7,
+                  flex: 8,
                   child: Container(
                     height: Get.height,
                     width: Get.width,
+                    alignment: Alignment.center,
                     padding: EdgeInsets.only(top: 1),
                     color: bgColor,
                     child: GridView.count(
@@ -215,6 +147,10 @@ class HomeScreen extends GetWidget<HomeController> {
                     ),
                   ),
                 ),
+                Expanded(
+                  flex: 1,
+                  child: Center(child: Text("© NHH GROUP 2020. All rights reserved")),
+                )
               ],
             ),
           )),
