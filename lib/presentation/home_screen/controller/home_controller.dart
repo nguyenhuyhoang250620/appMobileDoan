@@ -18,13 +18,12 @@ class HomeController extends GetxController {
   var test1 = false.obs;
   Uint8List? image;
   var siso = 0.obs;
-  var MaGV = 'phan_van_tien'.obs;
+  var MaGV = ''.obs;
   var MaHocPhan = ''.obs;
   RxList danh_sach_mon = [].obs;
-
   @override
   void onInit() {
-    // getMaGV();
+    getDataCode();
     super.onInit();
   }
 
@@ -38,47 +37,28 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
-  Future<void> getMaGV() async {
-    // Lưu trữ một giá trị
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // MaGV.value = prefs.getString('MaGV')!;
-    attendanceDocument(MaGV.value,'');
+
+  Future<void> getDataCode ()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    MaGV.value = prefs.getString('MaGV')!;
+    MaHocPhan.value =prefs.getString('MaHocPhan')!;
+    listenToDocumentChanges(MaGV.value,MaHocPhan.value);
   }
+
 
   void listenToDocumentChanges(String MaGV,String ma_hoc_phan) {
     print("hoang ${MaGV}");
+    print("hoang ${ma_hoc_phan}");
     firestoreInstance
         .collection("Config")
         .where('MaGV', isEqualTo: MaGV)
+        .where('mahocphan.MaHocPhan',isEqualTo: ma_hoc_phan)
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         final documentSnapshot = querySnapshot.docs.first;
         List data = (documentSnapshot.data() as Map)['danhsach'];
         siso.value = data.length;
-        // Cập nhật dữ liệu trong ứng dụng của bạn
-      } else {
-        print("Document does not exist in the database");
-      }
-    });
-  }
-
-  void attendanceDocument(String MaGV, String ma_hoc_phan) {
-    print("hoang ${MaGV}");
-    FirebaseFirestore.instance
-        .collection("Attendance")
-        .where('MaGV', isEqualTo: MaGV)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      if (querySnapshot.docs.isNotEmpty) {
-        for (final doc in querySnapshot.docs) {
-          danh_sach_mon.add(doc['MaHocPhan']);
-        }
-        if (ma_hoc_phan == '') {
-          MaHocPhan.value = danh_sach_mon.value.first;
-        } else {
-          MaHocPhan.value = ma_hoc_phan;
-        }
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {
         print("Document does not exist in the database");

@@ -51,7 +51,7 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                            Text('Chọn thời gian', style: AppStyle.txtContentCard.copyWith(color: darkTextColor)),
+                            Text('Thời gian', style: AppStyle.txtContentCard.copyWith(color: darkTextColor)),
                             SizedBox(width: 10,),
                             Icon(
                                   Icons.edit_calendar_rounded,
@@ -89,7 +89,7 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
                     Obx(() => Text("Sỹ số lớp : ${controller.comat.value.toString()}/${homeController.siso.value.toString()}, Vắng ${homeController.siso.value-controller.comat.value}"),),
                     TextButton(
                         onPressed: () {
-                          controller.deleteAllDatabases();
+                          // controller.deleteAllDatabases();
                           Get.dialog(
                             Dialog(
                                 child: Container(
@@ -113,82 +113,77 @@ class AttendanceScreen extends GetWidget<AttendanceController>{
                                       ),
                                       Expanded(
                                         flex: 9,
-                                        child:ListView.builder(
-                                          itemCount: controller.listEmployeeAttendance.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(color: darkTextColor),
-                                                borderRadius: BorderRadius.circular(8.0)
-                                              ),
-                                              margin: EdgeInsets.all(appPadding),
-                                              padding: EdgeInsets.all(appPadding),
-                                              child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        Text("${controller.listEmployeeAttendance.value[index].name}",style: AppStyle.txtCartTitle,),
-                                                          RichText(
-                                                            text: TextSpan(
-                                                              children: [
-                                                                TextSpan(
-                                                                  text: 'Mã số sinh viên : ',
-                                                                  style: AppStyle.txtContentCard
+                                        child:Obx(() => controller.listStudentLeave.isNotEmpty
+                                            ?ListView.builder(
+                                              itemCount: controller.listStudentLeave.length,
+                                              itemBuilder: (context, index) {
+                                                return Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(color: darkTextColor),
+                                                    borderRadius: BorderRadius.circular(8.0)
+                                                  ),
+                                                  margin: EdgeInsets.all(appPadding),
+                                                  padding: EdgeInsets.all(appPadding),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Text("${controller.listStudentLeave.value[index].tenSV}",style: AppStyle.txtCartTitle,),
+                                                              RichText(
+                                                                text: TextSpan(
+                                                                  children: [
+                                                                    TextSpan(
+                                                                      text: 'Mã số sinh viên : ',
+                                                                      style: AppStyle.txtContentCard
+                                                                    ),
+                                                                    TextSpan(
+                                                                      text: '${controller.listStudentLeave.value[index].maSV}',
+                                                                      style: AppStyle.txtContentCard.copyWith(color: blue)
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                                TextSpan(
-                                                                  text: '${controller.listEmployeeAttendance.value[index].masv}',
-                                                                  style: AppStyle.txtContentCard.copyWith(color: blue)
+                                                              ),
+                                                              RichText(
+                                                                text: TextSpan(
+                                                                  children: [
+                                                                    TextSpan(
+                                                                      text: 'Khoa : ',
+                                                                      style: AppStyle.txtContentCard
+                                                                    ),
+                                                                    TextSpan(
+                                                                      text: '${controller.listStudentLeave.value[index].khoa}',
+                                                                      style: AppStyle.txtContentCard.copyWith(color: green)
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          RichText(
-                                                            text: TextSpan(
-                                                              children: [
-                                                                TextSpan(
-                                                                  text: 'Thời gian vào : ',
-                                                                  style: AppStyle.txtContentCard
+                                                              ),
+                                                              RichText(
+                                                                text: TextSpan(
+                                                                  children: [
+                                                                    TextSpan(
+                                                                      text: 'Sđt : ',
+                                                                      style: AppStyle.txtContentCard
+                                                                    ),
+                                                                    TextSpan(
+                                                                      text: '${controller.listStudentLeave.value[index].soDT}',
+                                                                      style: AppStyle.txtContentCard.copyWith(color: orange)
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                                TextSpan(
-                                                                  text: '${controller.listEmployeeAttendance.value[index].timeIn}',
-                                                                  style: AppStyle.txtContentCard.copyWith(color: green)
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Obx(() => controller.listEmployeeAttendance.value[index].timeIn.contains(controller.listEmployeeAttendance.value[index].timeOut)
-                                                          ?RichText(
-                                                            text: TextSpan(
-                                                              children: [
-                                                                TextSpan(
-                                                                  text: 'Thời gian ra : ',
-                                                                  style: AppStyle.txtContentCard
-                                                                ),
-                                                                TextSpan(
-                                                                  text: '-',
-                                                                  style: AppStyle.txtContentCard.copyWith(color: red),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ):RichText(
-                                                            text: TextSpan(
-                                                              children: [
-                                                                TextSpan(
-                                                                  text: 'Thời gian ra : ',
-                                                                  style: AppStyle.txtContentCard
-                                                                ),
-                                                                TextSpan(
-                                                                  text: '${controller.listEmployeeAttendance.value[index].timeOut}',
-                                                                  style: AppStyle.txtContentCard.copyWith(color: red),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),)
-                                                      ],
-                                                    ),
-                                            );
-                                          },
-                                        )
+                                                              ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )
+                                                );
+                                              },
+                                            )
+                                          :Center(child: Text('Không có dữ liệu'),))
                                       )
                                     ],
                                   ),

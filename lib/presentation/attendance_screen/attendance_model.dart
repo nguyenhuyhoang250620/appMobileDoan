@@ -19,3 +19,37 @@ class AttendanceModel {
     );
   }
 }
+class Student {
+  String gioiTinh;
+  String email;
+  String maSV;
+  String namSinh;
+  String soDT;
+  String khoa;
+  String cccd;
+  String tenSV;
+
+  Student({
+    required this.gioiTinh,
+    required this.email,
+    required this.maSV,
+    required this.namSinh,
+    required this.soDT,
+    required this.khoa,
+    required this.cccd,
+    required this.tenSV,
+  });
+
+  factory Student.fromJson(Map<String, dynamic> json) {
+    return Student(
+      gioiTinh: json['GioiTinh'],
+      email: json['Email'],
+      maSV: json['MaSV'],
+      namSinh: json['NamSinh'],
+      soDT: json['SoDT'],
+      khoa: json['Khoa'],
+      cccd: json['CCCD'],
+      tenSV: json['TenSV'],
+    );
+  }
+  }

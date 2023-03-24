@@ -6,9 +6,8 @@ import 'package:app_mobile_doan/core/app_export.dart';
 import 'package:app_mobile_doan/core/utils/constants.dart';
 import 'package:app_mobile_doan/presentation/divice_screen/controller/divice_controller.dart';
 import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
+
 
 import '../general_screen/controller/general_controller.dart';
 import 'models/divice_model.dart';
@@ -29,7 +28,7 @@ class _DiviceState extends State<DiviceScreen> {
   String barcode = 'Tap  to scan';
   var color = "1".obs;
   final controller = Get.find<DiviceController>();
-  final generalController = Get.find<GeneralController>();
+  final homeController = Get.find<HomeController>();
   final List<String> listnua = [];
   final List<Uint8List> listnuahay = [];
   final List<DeviceModel> landau = [];
@@ -105,7 +104,7 @@ class _DiviceState extends State<DiviceScreen> {
                             name: controller.TenSV.value,
                             title: controller.MaSV.value,
                             value: controller.image!,
-                            magv: generalController.MaGV.value);
+                            magv: homeController.MaGV.value);
                         controller.lancuoi.value.add(model);
                         List<DeviceModel> devices = controller.lancuoi.value;
                         controller.uniqueDevices.value = devices
@@ -171,6 +170,8 @@ class _DiviceState extends State<DiviceScreen> {
                               Expanded(
                                   flex: 5,
                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Obx(
                                         () => Text(

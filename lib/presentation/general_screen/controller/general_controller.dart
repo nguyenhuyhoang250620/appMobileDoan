@@ -40,29 +40,10 @@ class GeneralController extends GetxController {
 
   Future<void> getMaGV() async {
     // Lưu trữ một giá trị
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // MaGV.value = prefs.getString('MaGV')!;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('MaGV',MaGV.value);
     attendanceDocument(MaGV.value);
   }
-
-  void listenToDocumentChanges(String MaGV,String ma_hoc_phan) {
-    print("hoang ${MaGV}");
-    firestoreInstance
-        .collection("Config")
-        .where('MaGV', isEqualTo: MaGV)
-        .snapshots()
-        .listen((QuerySnapshot querySnapshot) {
-      if (querySnapshot.docs.isNotEmpty) {
-        final documentSnapshot = querySnapshot.docs.first;
-        List data = (documentSnapshot.data() as Map)['danhsach'];
-        siso.value = data.length;
-        // Cập nhật dữ liệu trong ứng dụng của bạn
-      } else {
-        print("Document does not exist in the database");
-      }
-    });
-  }
-
   void attendanceDocument(String MaGV) {
     print("hoang ${MaGV}");
     FirebaseFirestore.instance
@@ -83,24 +64,5 @@ class GeneralController extends GetxController {
         print("Document does not exist in the database");
       }
     });
-  }
-
-  void addData() async {
-    try {
-      // tạo document mới với dữ liệu cần thêm vào
-      DocumentReference newDoc = await phongHocCollection.add({
-        "sv": [
-          {"ten": "hoang"}
-        ],
-        "phong": {"tenphong": "phonga"},
-        "mon": {"tenmon": "tenmon"},
-        "thoigian": {"tenca": "tenca"},
-        "giangvien": {"tengv": "tengv"},
-        "phongban": {"tenphong": "tenphong"}
-      });
-      print('Thêm dữ liệu thành công: ${newDoc.id}');
-    } catch (e) {
-      print('Lỗi khi thêm dữ liệu: $e');
-    }
   }
 }

@@ -8,7 +8,6 @@ class GeneralBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => GeneralController());
-    Get.lazyPut(() => DiviceController());
     Get.lazyPut(() => LoginController());
   }
 }

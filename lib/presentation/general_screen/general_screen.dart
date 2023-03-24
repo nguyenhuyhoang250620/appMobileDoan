@@ -3,6 +3,7 @@ import 'package:app_mobile_doan/presentation/login_screen/controller/login_contr
 import 'package:app_mobile_doan/widgets/custom_button.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:multiselect/multiselect.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/utils/constants.dart';
 import '../../widgets/custom_button_alert.dart';
@@ -74,11 +75,12 @@ class GeneralScreen extends GetWidget<GeneralController> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('$index. ${controller.danh_sach_mon[index].TenHocPhan}'),
+                                Text('  ☛ ${controller.danh_sach_mon[index].TenHocPhan}'),
                                 IconButton(
-                                  onPressed:() {
-                                    controller.MaHocPhan.value = controller.danh_sach_mon[index].MaHocPhan!;
-                                    Get.toNamed(AppRoutes.homeScreen);
+                                  onPressed:() async {
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    prefs.setString('MaHocPhan',controller.danh_sach_mon[index].MaHocPhan!);
+                                    Get.offAllNamed(AppRoutes.homeScreen);
                                   },
                                   icon: Icon(Icons.camera_enhance),
                                   )

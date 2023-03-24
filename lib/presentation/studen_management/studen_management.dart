@@ -11,7 +11,7 @@ import 'package:multiselect/multiselect.dart';
 import '../../core/app_export.dart';
 import '../../core/utils/constants.dart';
 class StudenManagement extends GetWidget<StudenController>{
-  final generalController = Get.find<GeneralController>();
+  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +52,7 @@ class StudenManagement extends GetWidget<StudenController>{
           Expanded(
             flex: 8,
             child:StreamBuilder<QuerySnapshot>(
-              stream: controller.phongHocCollection.where('MaGV',isEqualTo: generalController.MaGV.value).where('mahocphan.MaHocPhan',isEqualTo:generalController.MaHocPhan.value).snapshots(),
+              stream: controller.phongHocCollection.where('MaGV',isEqualTo: homeController.MaGV.value).where('mahocphan.MaHocPhan',isEqualTo:homeController.MaHocPhan.value).snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return Text('Something went wrong');

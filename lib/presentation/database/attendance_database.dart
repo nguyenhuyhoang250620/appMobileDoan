@@ -19,7 +19,8 @@ class MyDb {
                           masv TEXT NOT NULL,
                           time TEXT NOT NULL,
                           image TEXT NOT NULL,
-                          magv TEXT NOT NULL
+                          magv TEXT NOT NULL,
+                          mahocphan TEXT NOT NULL
                       );
 
                       //create more table here

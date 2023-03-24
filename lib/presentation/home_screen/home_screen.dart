@@ -65,25 +65,18 @@ class HomeScreen extends GetWidget<HomeController> {
                       children: <Widget>[
                         ...List.generate(modelList.length, (index) {
                           HomeModel model = modelList[index];
-                          return InkWell(
-                            onTap: () {
-                              if (index == 0) {}
-                              if (index == 1) {
-                                Get.offAndToNamed(AppRoutes.diviceScreen);
-                              }
-                            },
-                            child: InkWell(
+                          return  InkWell(
                               onTap: () {
                                 if (index == 0) {
-                                  Get.offAndToNamed(AppRoutes.attendanceScreen);
+                                  Get.toNamed(AppRoutes.attendanceScreen);
                                 } else if (index == 1) {
-                                  Get.offAndToNamed(AppRoutes.studenManagement);
+                                  Get.toNamed(AppRoutes.studenManagement);
                                 } else if (index == 2) {
-                                  Get.offAndToNamed(AppRoutes.chartsScreen);
+                                  Get.toNamed(AppRoutes.chartsScreen);
                                 } else if (index == 3) {
-                                  Get.offAndToNamed(AppRoutes.calendarEvent);
+                                  Get.toNamed(AppRoutes.calendarEvent);
                                 } else if (index == 4) {
-                                  Get.offAndToNamed(AppRoutes.diviceScreen);
+                                  Get.offAllNamed(AppRoutes.diviceScreen);
                                 } else {
                                   print('HoangNH: logout');
                                 }
@@ -140,8 +133,7 @@ class HomeScreen extends GetWidget<HomeController> {
                                   ],
                                 ),
                               ),
-                            ),
-                          );
+                            );
                         })
                       ],
                     ),

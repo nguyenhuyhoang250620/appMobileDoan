@@ -1,12 +1,14 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:app_mobile_doan/presentation/general_screen/controller/general_controller.dart';
 import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:app_mobile_doan/presentation/home_screen/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../database/attendance_database.dart';
 import '../models/divice_model.dart';
 import '/core/app_export.dart';
@@ -28,6 +30,8 @@ class DiviceController extends GetxController {
   RxList<DeviceModel> uniqueDevices = <DeviceModel>[].obs;
   final MyDb mydb = MyDb();
   final homeController = Get.find<HomeController>();
+   var MaGV = ''.obs;
+  var MaHocPhan = ''.obs;
   final random = Random();
   final CollectionReference usersRef =
       FirebaseFirestore.instance.collection('Attendance');
@@ -35,7 +39,8 @@ class DiviceController extends GetxController {
   void onInit() {
     mydb.open();
     print('HoangNH: open');
-    getUserData();
+    // getUserData();
+    getDataCode();
     super.onInit();
   }
 
@@ -48,33 +53,39 @@ class DiviceController extends GetxController {
   void onClose() {
     super.onClose();
   }
-
-  Future<void> getUserData() async {
-    CollectionReference collectionReference =
-        firestoreInstance.collection("User");
-    QuerySnapshot querySnapshot = await collectionReference.get();
-    List<DocumentSnapshot> documents = querySnapshot.docs;
-    documents.forEach((document) {
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      User user = User.fromJson(data);
-      getEmployeeUser.add(user);
-    });
+  Future<void> getDataCode ()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    MaGV.value = prefs.getString('MaGV')!;
+    MaHocPhan.value =prefs.getString('MaHocPhan')!;
   }
 
-  Future<void> startBarcodeScanStream() async {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            '#ff6666', 'Cancel', true, ScanMode.DEFAULT)!
-        .listen((event) {
-      print(event);
-      listtest.value.add(event);
-    });
-  }
+
+  // Future<void> getUserData() async {
+  //   CollectionReference collectionReference =
+  //       firestoreInstance.collection("User");
+  //   QuerySnapshot querySnapshot = await collectionReference.get();
+  //   List<DocumentSnapshot> documents = querySnapshot.docs;
+  //   documents.forEach((document) {
+  //     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+  //     User user = User.fromJson(data);
+  //     getEmployeeUser.add(user);
+  //   });
+  // }
+
+  // Future<void> startBarcodeScanStream() async {
+  //   FlutterBarcodeScanner.getBarcodeStreamReceiver(
+  //           '#ff6666', 'Cancel', true, ScanMode.DEFAULT)!
+  //       .listen((event) {
+  //     print(event);
+  //     listtest.value.add(event);
+  //   });
+  // }
 
   Future<void> listenToDocumentChanges(String doc) async {
     await firestoreInstance
         .collection("Config")
         .where('MaGV', isEqualTo: homeController.MaGV.value)
-        // .where('mahocphan.MaHocPhan', isEqualTo: 'MaHocPhan')
+        .where('mahocphan.MaHocPhan', isEqualTo: homeController.MaHocPhan.value)
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
@@ -121,11 +132,11 @@ class DiviceController extends GetxController {
             File('${directory.path}/image${random.nextInt(1000)}.jpg');
         await file.writeAsBytes(e.value);
         await mydb.db.rawInsert(
-            "INSERT INTO Attendance (name, masv, time, image, magv) VALUES (?, ?, ?, ?, ?);",
-            [e.name, e.title, e.time, file.path, e.magv]);
+            "INSERT INTO Attendance (name, masv, time, image, magv, mahocphan) VALUES (?, ?, ?, ?, ?, ?);",
+            [e.name, e.title, e.time, file.path, e.magv,MaHocPhan.value]);
         // await addUser(e.magv!, 'an_toan', '101B1', e.time!, e.time!,
         //     e.name!, e.title);
-        await addDiemDanh(e.magv!, 'an_toan', e.title, e.name!, e.time!);
+        await addDiemDanh(MaGV.value,MaHocPhan.value, e.title, e.name!, e.time!);
       }
     }
     uniqueDevices.clear();
