@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/core/app_export.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class LoginController extends GetxController {
   late TextEditingController emailController = TextEditingController();
@@ -33,14 +34,16 @@ class LoginController extends GetxController {
     prefs.setString('MaGV', email);
     try {
       UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: '${email}@gmail.com',
         password: password,
-      ).then((value){
-        print('HoangNH: $value');
-        return value;
-      });
-      Get.offAndToNamed(AppRoutes.homeScreen);
+      );
+      String idToken = await userCredential.user!.getIdToken();
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(idToken);
+      String role = decodedToken['role'];
+
+      print('User role: $role');
+      Get.offAndToNamed(AppRoutes.generalScreen);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
@@ -49,14 +52,13 @@ class LoginController extends GetxController {
       }
     }
   }
-  
-  Future<void> logout() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.remove('MaGV'); 
-  await FirebaseAuth.instance.signOut(); 
-  Get.offAndToNamed(AppRoutes.loginScreen);
-}
 
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('MaGV');
+    await FirebaseAuth.instance.signOut();
+    Get.offAndToNamed(AppRoutes.loginScreen);
+  }
 }
 
 void forgetPassword(String email) {}

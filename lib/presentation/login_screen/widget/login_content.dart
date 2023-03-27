@@ -58,10 +58,6 @@ class _LoginContentState extends State<LoginContent> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         FadeAnimation(
-                          delay: 0.8,
-                          child: Image.asset("assets/images/logo_naem.png",width: 100,)
-                        ),
-                        FadeAnimation(
                           delay: 1,
                           child: const Text(
                             "Vui lòng đăng nhập để tiếp tục",
