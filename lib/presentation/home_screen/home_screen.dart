@@ -78,7 +78,7 @@ class HomeScreen extends GetWidget<HomeController> {
                                 } else if (index == 4) {
                                   Get.offAllNamed(AppRoutes.diviceScreen);
                                 } else {
-                                  print('HoangNH: logout');
+                                  Get.toNamed(AppRoutes.chatGroup);
                                 }
                               },
                               child: Container(

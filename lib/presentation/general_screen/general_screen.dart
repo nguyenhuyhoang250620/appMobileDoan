@@ -31,10 +31,10 @@ class GeneralScreen extends GetWidget<GeneralController> {
                     children: [
                       Padding(
                           padding: EdgeInsets.only(left: appPadding),
-                          child: Text(
+                          child: Obx(() => Text(
                               "Xin chào 👋, ${controller.MaGV.value}",
                               style: AppStyle.titleTop.copyWith(color: bgColor),
-                            ),),
+                            )),),
                     ],
                   ),
                 ),

@@ -31,7 +31,6 @@ class LoginController extends GetxController {
 
   Future<void> onLogin(String email, String password) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('MaGV', email);
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -41,7 +40,9 @@ class LoginController extends GetxController {
       String idToken = await userCredential.user!.getIdToken();
       Map<String, dynamic> decodedToken = JwtDecoder.decode(idToken);
       String role = decodedToken['role'];
-
+      String? ma_giang_vien = await userCredential.user!.email;
+      String cleanedEmailMaGV = ma_giang_vien!.replaceAll('@gmail.com', '');
+      prefs.setString('MaGV', cleanedEmailMaGV);
       print('User role: $role');
       Get.offAndToNamed(AppRoutes.generalScreen);
     } on FirebaseAuthException catch (e) {

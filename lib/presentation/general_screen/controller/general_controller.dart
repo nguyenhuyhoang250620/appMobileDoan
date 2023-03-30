@@ -41,7 +41,7 @@ class GeneralController extends GetxController {
   Future<void> getMaGV() async {
     // Lưu trữ một giá trị
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('MaGV',MaGV.value);
+    MaGV.value = prefs.getString('MaGV')!;
     attendanceDocument(MaGV.value);
   }
   void attendanceDocument(String MaGV) {

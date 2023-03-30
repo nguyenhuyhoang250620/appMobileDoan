@@ -4,6 +4,8 @@ import 'package:app_mobile_doan/presentation/attendance_screen/attendance_screen
 import 'package:app_mobile_doan/presentation/calendar_event/calendar_event.dart';
 import 'package:app_mobile_doan/presentation/calendar_event/calendart_binding.dart';
 import 'package:app_mobile_doan/presentation/charts_screen/charts_binding.dart';
+import 'package:app_mobile_doan/presentation/chat_group/chat_binding.dart';
+import 'package:app_mobile_doan/presentation/chat_group/chat_group.dart';
 import 'package:app_mobile_doan/presentation/divice_screen/binding/divice_binding.dart';
 import 'package:app_mobile_doan/presentation/divice_screen/divice_screen.dart';
 import 'package:app_mobile_doan/presentation/general_screen/general_screen.dart';
@@ -36,6 +38,8 @@ class AppRoutes {
   static String calendarEvent = '/calendar_event';
 
   static String generalScreen = '/general_screen';
+
+  static String chatGroup = '/chat_group';
 
   static List<GetPage> pages = [
     GetPage(
@@ -101,6 +105,13 @@ class AppRoutes {
       page: () => GeneralScreen(),
       bindings: [
         GeneralBinding(),
+      ],
+    ),
+     GetPage(
+      name: chatGroup,
+      page: () => ChatGroupScreen(),
+      bindings: [
+        ChatBinding(),
       ],
     ),
   ];
