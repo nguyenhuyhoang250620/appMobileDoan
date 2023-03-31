@@ -15,7 +15,7 @@ const transparent = Colors.transparent;
 final colorButton = Colors.blueAccent.withOpacity(0.8);
 final colorItem = Colors.white.withOpacity(0.9);
 
-const grey = Color.fromRGBO(148, 170, 220, 1);
+const grey = Colors.grey;
 const purple = Color.fromRGBO(165, 80, 179, 1);
 const orange = Colors.orange;
 final green = Colors.green;

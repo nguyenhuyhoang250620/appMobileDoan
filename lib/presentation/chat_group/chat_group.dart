@@ -40,6 +40,7 @@ class ChatGroupScreen extends GetWidget<ChatController>{
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   final message = messages[index];
+                  controller.URL.value =  message['imageUrl'];
                   return message['from'] == controller.MaGV.value
                   ?Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -65,10 +66,16 @@ class ChatGroupScreen extends GetWidget<ChatController>{
                                 ),
                             ),
                             SizedBox(height: 8,),
-                            Text(
-                              message['thoigian'],
-                              style: TextStyle(color:darkTextColor,fontSize: 10),
-                            )
+                            Image.network(
+                              message['imageUrl'],
+                              errorBuilder: (context, error, stackTrace) {
+                                return SizedBox(height: 1,);
+                              },
+                              ),
+                              Text(
+                                message['thoigian'],
+                                style: TextStyle(color:darkTextColor,fontSize: 10),
+                              )
                             ],
                           ),
                           constraints: BoxConstraints(
@@ -104,6 +111,12 @@ class ChatGroupScreen extends GetWidget<ChatController>{
                                 style: TextStyle(color: darkTextColor),
                               ),
                               SizedBox(height: 8,),
+                              Image.network(
+                              message['imageUrl'],
+                              errorBuilder: (context, error, stackTrace) {
+                                return SizedBox(height: 1,);
+                              },
+                              ),
                               Text(message['thoigian'],style: TextStyle(color: darkTextColor,fontSize: 10),)
                             ]
                           ),
@@ -135,23 +148,42 @@ class ChatGroupScreen extends GetWidget<ChatController>{
                   ),
                 ),
               ),
-              child: TextField(
+              child: Obx(() => TextField(
                 controller: controller.txtmessage,
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.send,color: blue,),
+                    icon: Icon(Icons.send,color: controller.isCheckPickFile.value?controller.isLoadingImage.value?blue:grey:blue,),
                     onPressed: () {
-                      controller.sendMessage(controller.txtmessage.text);
-                      controller.txtmessage.clear();
+                      if(controller.isCheckPickFile.value){
+                        if(controller.isLoadingImage.value){
+                         controller.sendMessage(controller.txtmessage.text,controller.URL.value);
+                          controller.filename.value="";
+                          controller.URL.value =  "";
+                          controller.isLoadingImage = false.obs;  
+                          controller.isCheckPickFile = false.obs;
+                          controller.txtmessage.clear();
+                        }
+                      }
+                      else{
+                        controller.sendMessage(controller.txtmessage.text,"");
+                        controller.txtmessage.clear();
+                      }
+                    },
+                  ),
+                  prefixIcon: IconButton(
+                    icon: Icon(Icons.camera_alt_outlined),
+                    onPressed: () {
+                      controller.isCheckPickFile.value = true;
+                      controller.pickFileImage();
                     },
                   ),
                   border: InputBorder.none,
-                  hintText: 'Nhắn tin',
+                  hintText: controller.filename.value == ''?'Nhắn tin':controller.filename.value,
                   filled: true,
                   fillColor: Colors.grey[200],
                   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                 ),
-              ),
+              ),)
             ),
           ),
        ],
