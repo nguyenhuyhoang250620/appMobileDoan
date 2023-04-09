@@ -8,7 +8,6 @@ import 'package:app_mobile_doan/presentation/divice_screen/controller/divice_con
 import 'package:app_mobile_doan/presentation/home_screen/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 
-
 import '../general_screen/controller/general_controller.dart';
 import 'models/divice_model.dart';
 
@@ -83,7 +82,7 @@ class _DiviceState extends State<DiviceScreen> {
                       debugPrint(value);
 
                       controller.MaSV.value = value;
-                    
+
                       // listnua.add(value);
                       // controller.listtest.value =
                       //     listnua.toSet().toList();
@@ -96,23 +95,24 @@ class _DiviceState extends State<DiviceScreen> {
                       });
                     },
                     onDetect: (p0) {
-                      if (controller.MaSV.isNotEmpty) {
+                      if (controller.MaSV.isNotEmpty &&
+                          controller.istest.value == true) {
                         controller.image = p0.image;
-                        Future.delayed(Duration(milliseconds: 500), () {
-                        DeviceModel model = DeviceModel(
-                            time: controller.time.value,
-                            name: controller.TenSV.value,
-                            title: controller.MaSV.value,
-                            value: controller.image!,
-                            magv: homeController.MaGV.value);
-                        controller.lancuoi.value.add(model);
-                        List<DeviceModel> devices = controller.lancuoi.value;
-                        controller.uniqueDevices.value = devices
-                            .where((device) => device.title != null)
-                            .toSet()
-                            .toList();
+                        Future.delayed(Duration(milliseconds: 100), () {
+                          DeviceModel model = DeviceModel(
+                              time: controller.time.value,
+                              name: controller.TenSV.value,
+                              title: controller.MaSV.value,
+                              value: controller.image!,
+                              magv: homeController.MaGV.value);
+                          controller.lancuoi.value.add(model);
+                          List<DeviceModel> devices = controller.lancuoi.value;
+                          controller.uniqueDevices.value = devices
+                              .where((device) => device.title != null)
+                              .toSet()
+                              .toList();
                         });
-                        
+                        controller.istest.value = false;
                       }
                     },
                     controller: MobileScannerController(
@@ -170,7 +170,8 @@ class _DiviceState extends State<DiviceScreen> {
                               Expanded(
                                   flex: 5,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Obx(

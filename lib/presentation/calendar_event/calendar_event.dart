@@ -154,13 +154,13 @@ class _CalendarState extends State<CalendarEvent> {
             rangeEndDay: _rangeEnd,
             calendarFormat: _calendarFormat,
             rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: _getEventsForDay,
+            // eventLoader: _getEventsForDay,
             holidayPredicate: (day) {
               // Every 20th day of the month will be treated as a holiday
               return day.day == 20;
             },
-            onDaySelected: _onDaySelected,
-            onRangeSelected: _onRangeSelected,
+            // onDaySelected: _onDaySelected,
+            // onRangeSelected: _onRangeSelected,
             onCalendarCreated: (controller) => _pageController = controller,
             onPageChanged: (focusedDay) => _focusedDay.value = focusedDay,
             onFormatChanged: (format) {

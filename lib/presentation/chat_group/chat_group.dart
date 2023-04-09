@@ -7,6 +7,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import '../../core/utils/constants.dart';
 
 class ChatGroupScreen extends GetWidget<ChatController>{
+  ScrollController _scrollController = ScrollController();
   
   @override
   Widget build(BuildContext context) {
@@ -29,107 +30,129 @@ class ChatGroupScreen extends GetWidget<ChatController>{
       color: green.withOpacity(0.2),
       child: Stack(
         children: [
-          StreamBuilder<QuerySnapshot>(
-            stream: controller.firestore.collection('Messenger').orderBy('timestamp', descending: false).snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Text('Loading...');
-              }
-              final messages = snapshot.data!.docs;
-              return ListView.builder(
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final message = messages[index];
-                  controller.URL.value =  message['imageUrl'];
-                  return message['from'] == controller.MaGV.value
-                  ?Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Container(
-                          margin: EdgeInsets.all(appPadding),
-                          padding: EdgeInsets.all(appPadding),
-                          decoration: BoxDecoration(
-                            color: bgColor,
-                            borderRadius: BorderRadius.circular(10.0)
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                            Flexible(
-                              child: Text(
-                                message['message'],
-                                style: TextStyle(color:darkTextColor),
+          Container(
+            height: Get.height,
+            width: Get.width,
+            child: Column(
+              children: [
+                 Expanded(
+                  flex: 1,
+                   child: Container(
+                    height: Get.height,
+                    width: Get.width,
+                     child: StreamBuilder<QuerySnapshot>(
+                      stream: controller.firestore.collection('Messenger').orderBy('timestamp', descending: false).snapshots(),
+                      builder: (context, snapshot) {               
+                        if (!snapshot.hasData) {
+                          return const Text('Loading...');
+                        }
+                         final messages = snapshot.data!.docs;
+                        Future.delayed(Duration(milliseconds: 50), () {
+                          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                        });
+                        return ListView.builder(
+                          controller: _scrollController,
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            final message = messages[index];
+                            controller.URL.value =  message['imageUrl'];
+                            return  message['from'] == controller.MaGV.value
+                            ?Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Container(
+                                    margin: EdgeInsets.all(appPadding),
+                                    padding: EdgeInsets.all(appPadding),
+                                    decoration: BoxDecoration(
+                                      color: bgColor,
+                                      borderRadius: BorderRadius.circular(10.0)
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                      Flexible(
+                                        child: Text(
+                                          message['message'],
+                                          style: TextStyle(color:darkTextColor),
+                                          ),
+                                      ),
+                                      SizedBox(height: 8,),
+                                      Image.network(
+                                        message['imageUrl'],
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return SizedBox(height: 1,);
+                                        },
+                                        ),
+                                        Text(
+                                          message['thoigian'],
+                                          style: TextStyle(color:darkTextColor,fontSize: 10),
+                                        )
+                                      ],
+                                    ),
+                                    constraints: BoxConstraints(
+                                      maxWidth: MediaQuery.of(context).size.width * 0.6,
+                                    ),
+                                  ),
                                 ),
-                            ),
-                            SizedBox(height: 8,),
-                            Image.network(
-                              message['imageUrl'],
-                              errorBuilder: (context, error, stackTrace) {
-                                return SizedBox(height: 1,);
-                              },
-                              ),
-                              Text(
-                                message['thoigian'],
-                                style: TextStyle(color:darkTextColor,fontSize: 10),
-                              )
-                            ],
-                          ),
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ):Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Container(
-                          margin: EdgeInsets.all(appPadding),
-                          padding: EdgeInsets.all(appPadding),
-                          decoration: BoxDecoration(
-                            color: bgColor,
-                            borderRadius: BorderRadius.circular(10.0)
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                              message['from'],
-                                style: TextStyle(color: cardB,fontSize: 14,fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 8,),
-                              Text(
-                                message['message'],
-                                style: TextStyle(color: darkTextColor),
-                              ),
-                              SizedBox(height: 8,),
-                              Image.network(
-                              message['imageUrl'],
-                              errorBuilder: (context, error, stackTrace) {
-                                return SizedBox(height: 1,);
-                              },
-                              ),
-                              Text(message['thoigian'],style: TextStyle(color: darkTextColor,fontSize: 10),)
-                            ]
-                          ),
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
+                                SizedBox(height: 40,)
+                              ],
+                            ):Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Container(
+                                    margin: EdgeInsets.all(appPadding),
+                                    padding: EdgeInsets.all(appPadding),
+                                    decoration: BoxDecoration(
+                                      color: bgColor,
+                                      borderRadius: BorderRadius.circular(10.0)
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                        message['from'],
+                                          style: TextStyle(color: cardB,fontSize: 14,fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 8,),
+                                        Text(
+                                          message['message'],
+                                          style: TextStyle(color: darkTextColor),
+                                        ),
+                                        SizedBox(height: 8,),
+                                        Image.network(
+                                        message['imageUrl'],
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return SizedBox(height: 1,);
+                                        },
+                                        ),
+                                        Text(message['thoigian'],style: TextStyle(color: darkTextColor,fontSize: 10),)
+                                      ]
+                                    ),
+                                    constraints: BoxConstraints(
+                                      maxWidth: MediaQuery.of(context).size.width * 0.6,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 40,)
+                              ],
+                            );
+                          },
+                        );
+                      },
+                                   ),
+                   ),
+                 ),
+                SizedBox(height: 60,)
+              ],
+            ),
           ),
           Positioned(
             left: 20.0,

@@ -30,9 +30,10 @@ class DiviceController extends GetxController {
   RxList<DeviceModel> uniqueDevices = <DeviceModel>[].obs;
   final MyDb mydb = MyDb();
   final homeController = Get.find<HomeController>();
-   var MaGV = ''.obs;
+  var MaGV = ''.obs;
   var MaHocPhan = ''.obs;
   final random = Random();
+  var istest = false.obs;
   final CollectionReference usersRef =
       FirebaseFirestore.instance.collection('Attendance');
   @override
@@ -53,12 +54,12 @@ class DiviceController extends GetxController {
   void onClose() {
     super.onClose();
   }
-  Future<void> getDataCode ()async{
+
+  Future<void> getDataCode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     MaGV.value = prefs.getString('MaGV')!;
-    MaHocPhan.value =prefs.getString('MaHocPhan')!;
+    MaHocPhan.value = prefs.getString('MaHocPhan')!;
   }
-
 
   // Future<void> getUserData() async {
   //   CollectionReference collectionReference =
@@ -84,8 +85,8 @@ class DiviceController extends GetxController {
   Future<void> listenToDocumentChanges(String doc) async {
     await firestoreInstance
         .collection("Config")
-        .where('MaGV', isEqualTo: homeController.MaGV.value)
-        .where('mahocphan.MaHocPhan', isEqualTo: homeController.MaHocPhan.value)
+        .where('MaGV', isEqualTo: 'phan_van_tien')
+        .where('mahocphan.MaHocPhan', isEqualTo: 'an_ninh_mang')
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
@@ -118,6 +119,7 @@ class DiviceController extends GetxController {
         print("Document does not exist in the database");
       }
     });
+    istest.value = true;
   }
 
   Future<void> saveDatabase(List<DeviceModel> listData) async {
@@ -133,10 +135,11 @@ class DiviceController extends GetxController {
         await file.writeAsBytes(e.value);
         await mydb.db.rawInsert(
             "INSERT INTO Attendance (name, masv, time, image, magv, mahocphan) VALUES (?, ?, ?, ?, ?, ?);",
-            [e.name, e.title, e.time, file.path, e.magv,MaHocPhan.value]);
+            [e.name, e.title, e.time, file.path, e.magv, MaHocPhan.value]);
         // await addUser(e.magv!, 'an_toan', '101B1', e.time!, e.time!,
         //     e.name!, e.title);
-        await addDiemDanh(MaGV.value,MaHocPhan.value, e.title, e.name!, e.time!);
+        await addDiemDanh(
+            MaGV.value, MaHocPhan.value, e.title, e.name!, e.time!);
       }
     }
     uniqueDevices.clear();
