@@ -80,15 +80,8 @@ class _DiviceState extends State<DiviceScreen> {
 
                     onScan: (String value) {
                       debugPrint(value);
-
                       controller.MaSV.value = value;
-
-                      // listnua.add(value);
-                      // controller.listtest.value =
-                      //     listnua.toSet().toList();
-                      // barcode = value;
-                      // color.value = "2";
-                      controller.listenToDocumentChanges(value);
+                      controller.listenToDocumentChanges(controller.MaSV.value);
                       controller.test1.value = false;
                       Future.delayed(Duration(milliseconds: 2500), () {
                         controller.test1.value = true;
@@ -129,6 +122,7 @@ class _DiviceState extends State<DiviceScreen> {
                 child: Obx(() => ListView.builder(
                       itemCount: controller.uniqueDevices.length,
                       itemBuilder: (context, index) {
+                        List<DeviceModel> reversedList = controller.uniqueDevices.toList().reversed.toList();
                         return Container(
                           height: 100,
                           margin: EdgeInsets.all(10),
@@ -152,8 +146,7 @@ class _DiviceState extends State<DiviceScreen> {
                                                 fit: BoxFit.cover,
                                                 filterQuality:
                                                     FilterQuality.high,
-                                                controller.uniqueDevices
-                                                    .value[index].value),
+                                                controller.uniqueDevices[index].value),
                                           ),
                                         ));
                                       },
@@ -162,8 +155,7 @@ class _DiviceState extends State<DiviceScreen> {
                                         child: Image.memory(
                                             fit: BoxFit.contain,
                                             filterQuality: FilterQuality.high,
-                                            controller.uniqueDevices
-                                                .value[index].value),
+                                            controller.uniqueDevices[index].value),
                                       ),
                                     ),
                                   )),
@@ -178,11 +170,11 @@ class _DiviceState extends State<DiviceScreen> {
                                         () => Text(
                                             '${controller.uniqueDevices.value[index].name}'),
                                       ),
-                                      Text(
-                                          '${controller.uniqueDevices.value[index].title}'),
+                                      Obx(() => Text(
+                                          '${controller.uniqueDevices.value[index].title}')),
                                       Obx(
                                         () => Text(
-                                            '${controller.uniqueDevices.value[index].time}'),
+                                            '${controller.uniqueDevices.value[index].time!.substring(0,20)}'),
                                       )
                                     ],
                                   ))

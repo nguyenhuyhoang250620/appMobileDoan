@@ -22,6 +22,7 @@ class DiviceController extends GetxController {
   var time = "".obs;
   var test = true.obs;
   var test1 = false.obs;
+  var isCheckin = false.obs;
   var index = 0.obs;
   Uint8List? image;
   RxList<String> listtest = <String>[].obs;
@@ -88,32 +89,25 @@ class DiviceController extends GetxController {
         .where('MaGV', isEqualTo: 'phan_van_tien')
         .where('mahocphan.MaHocPhan', isEqualTo: 'an_ninh_mang')
         .snapshots()
-        .listen((QuerySnapshot querySnapshot) {
+        .listen((QuerySnapshot querySnapshot) async {
       if (querySnapshot.docs.isNotEmpty) {
         final documentSnapshot = querySnapshot.docs.first;
         List data = (documentSnapshot.data() as Map)['danhsach'];
-        data.map((e) {
+        for (var e in data) {
           print('HoangNH: ${e['MaSV']}');
           if (doc == e['MaSV']) {
             print('HoangNH: vaokhong');
-            firestoreInstance
+              await firestoreInstance
                 .collection("User")
                 .doc(doc)
-                .snapshots()
-                .listen((DocumentSnapshot documentSnapshot) {
-              if (documentSnapshot.exists) {
-                TenSV.value = '${(documentSnapshot.data() as Map)["TenSV"]}';
-                time.value = DateTime.now().toString();
-                // Cập nhật dữ liệu trong ứng dụng của bạn
-              } else {
-                print("Document does not exist on the database");
-              }
-            });
-          } else {
-            time.value = '';
-            TenSV.value = '';
-          }
-        }).toList();
+                .get().then((value){
+                  TenSV.value = '${(value.data() as Map)["TenSV"]}';
+                  time.value = DateTime.now().toString();
+                  print('coten: ${TenSV.value}');
+                  isCheckin.value=true;
+                });
+          } 
+        }
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {
         print("Document does not exist in the database");

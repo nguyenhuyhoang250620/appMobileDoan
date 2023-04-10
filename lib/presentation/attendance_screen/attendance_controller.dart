@@ -73,20 +73,26 @@ class AttendanceController extends GetxController{
   }
 
   void getDataStudent(List<AttendanceModel> dataList) {
-    var MaGV = homeController.MaGV.value;
-    var ma_hoc_phan = homeController.MaHocPhan.value;
+    listStudentLeave.clear();
     firestoreInstance
         .collection("Config")
-        .where('MaGV', isEqualTo: MaGV)
-        .where('mahocphan.MaHocPhan',isEqualTo: ma_hoc_phan)
+        .where('MaGV', isEqualTo: homeController.MaGV.value)
+        .where('mahocphan.MaHocPhan',isEqualTo:homeController.MaHocPhan.value)
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         final documentSnapshot = querySnapshot.docs.first;
-        List data = (documentSnapshot.data() as Map)['danhsach'];
-        data.map((e){
-          dataList.map((doc){
-            if(e['MaSV'] != doc.masv){
+          List data = (documentSnapshot.data() as Map)['danhsach'];
+
+          data.forEach((e) {
+            bool hasMatch = false;
+            for (AttendanceModel doc in dataList) {
+              if (e['MaSV'] == doc.masv) {
+                hasMatch = true;
+                break;
+              }
+            }
+            if (!hasMatch) {
               Student model = Student(
                 cccd: e['CCCD'],
                 email: e['Email'],
@@ -95,13 +101,11 @@ class AttendanceController extends GetxController{
                 maSV: e['MaSV'],
                 namSinh: e['NamSinh'],
                 soDT: e['SoDT'],
-                tenSV: e['TenSV']
+                tenSV: e['TenSV'],
               );
               listStudentLeave.add(model);
             }
-          }).toList();
-          
-        }).toList();
+          });
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {
         print("Document does not exist in the database");
