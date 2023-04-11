@@ -12,6 +12,8 @@ class HomeController extends GetxController {
   final firestoreInstance = FirebaseFirestore.instance;
   CollectionReference phongHocCollection =
       FirebaseFirestore.instance.collection('Config');
+  final CollectionReference teacherAttendance =
+      FirebaseFirestore.instance.collection('TeacherAttendance');
   List<User> getEmployeeUser = <User>[].obs;
   var MaSV = "".obs;
   var test = false.obs;
@@ -64,5 +66,13 @@ class HomeController extends GetxController {
         print("Document does not exist in the database");
       }
     });
+  }
+
+
+  Future<void> CheckInTeacher()async{
+    print(MaGV.value);
+    print(MaHocPhan.value);
+    print(DateTime.now());
+    await teacherAttendance.doc();
   }
 }

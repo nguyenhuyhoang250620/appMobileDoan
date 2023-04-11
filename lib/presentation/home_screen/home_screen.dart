@@ -46,7 +46,24 @@ class HomeScreen extends GetWidget<HomeController> {
                   color: darkTextColor,
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 10,
+                ),
+                Container(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Giảng viên vui lòng ấn để Check-In',style: AppStyle.txtRobotoRegular16.copyWith(color: darkTextColor),),
+                      IconButton(
+                        onPressed: () {
+                          controller.CheckInTeacher();
+                        }, 
+                        icon: Icon(Icons.check_circle_outline_outlined),
+                        iconSize: 30,
+                        color: blue,
+                      )
+                    ],
+                  ),
                 ),
                 Expanded(
                   flex: 8,
@@ -141,11 +158,11 @@ class HomeScreen extends GetWidget<HomeController> {
                 ),
                 Expanded(
                   flex: 1,
-                  child: Center(child: Text("© NHH GROUP 2020. All rights reserved")),
+                  child: Center(child: Text("© NHH GROUP 2023. All rights reserved")),
                 )
               ],
             ),
-          )),
+          ),),
     );
   }
 }
