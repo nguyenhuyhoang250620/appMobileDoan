@@ -13,7 +13,7 @@ class HomeController extends GetxController {
   CollectionReference phongHocCollection =
       FirebaseFirestore.instance.collection('Config');
   final CollectionReference teacherAttendance =
-      FirebaseFirestore.instance.collection('TeacherAttendance');
+      FirebaseFirestore.instance.collection('Attendance_Teacher');
   List<User> getEmployeeUser = <User>[].obs;
   var MaSV = "".obs;
   var test = false.obs;
@@ -22,6 +22,8 @@ class HomeController extends GetxController {
   var siso = 0.obs;
   var MaGV = ''.obs;
   var MaHocPhan = ''.obs;
+  var MaPhong = ''.obs;
+  var ThoiGianBatDau = ''.obs;
   RxList danh_sach_mon = [].obs;
   @override
   void onInit() {
@@ -49,8 +51,6 @@ class HomeController extends GetxController {
 
 
   void listenToDocumentChanges(String MaGV,String ma_hoc_phan) {
-    print("hoang ${MaGV}");
-    print("hoang ${ma_hoc_phan}");
     firestoreInstance
         .collection("Config")
         .where('MaGV', isEqualTo: MaGV)
@@ -59,6 +59,8 @@ class HomeController extends GetxController {
         .listen((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         final documentSnapshot = querySnapshot.docs.first;
+        ThoiGianBatDau.value = (documentSnapshot.data() as Map)['maca']['ThoiGian'];
+        MaPhong.value = (documentSnapshot.data() as Map)['maphong']['MaPhong'];
         List data = (documentSnapshot.data() as Map)['danhsach'];
         siso.value = data.length;
         // Cập nhật dữ liệu trong ứng dụng của bạn
@@ -68,11 +70,21 @@ class HomeController extends GetxController {
     });
   }
 
+ 
 
   Future<void> CheckInTeacher()async{
-    print(MaGV.value);
-    print(MaHocPhan.value);
-    print(DateTime.now());
-    await teacherAttendance.doc();
+    final QuerySnapshot snapshot = await teacherAttendance
+      .where('MaGV', isEqualTo: MaGV.value)
+      .where('MaHocPhan', isEqualTo: MaHocPhan.value)
+      .get();
+    final DocumentReference docRef = snapshot.docs.first.reference;
+    final Map<String, dynamic> newData = {
+      'DiemDanh': FieldValue.arrayUnion([
+        {
+          'CheckIn': DateTime.now(),
+        }
+      ])
+    };
+    return docRef.update(newData);
   }
 }
