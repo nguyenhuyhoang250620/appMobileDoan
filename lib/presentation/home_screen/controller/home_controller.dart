@@ -81,7 +81,7 @@ class HomeController extends GetxController {
     final Map<String, dynamic> newData = {
       'DiemDanh': FieldValue.arrayUnion([
         {
-          'CheckIn': DateTime.now(),
+          'CheckIn': DateTime.now().toString(),
         }
       ])
     };
