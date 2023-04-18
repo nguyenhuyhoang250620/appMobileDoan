@@ -97,16 +97,17 @@ class DiviceController extends GetxController {
           print('HoangNH: ${e['MaSV']}');
           if (doc == e['MaSV']) {
             print('HoangNH: vaokhong');
-              await firestoreInstance
+            await firestoreInstance
                 .collection("User")
                 .doc(doc)
-                .get().then((value){
-                  TenSV.value = '${(value.data() as Map)["TenSV"]}';
-                  time.value = DateTime.now().toString();
-                  print('coten: ${TenSV.value}');
-                  isCheckin.value=true;
-                });
-          } 
+                .get()
+                .then((value) {
+              TenSV.value = '${(value.data() as Map)["TenSV"]}';
+              time.value = DateTime.now().toString();
+              print('coten: ${TenSV.value}');
+              isCheckin.value = true;
+            });
+          }
         }
         // Cập nhật dữ liệu trong ứng dụng của bạn
       } else {

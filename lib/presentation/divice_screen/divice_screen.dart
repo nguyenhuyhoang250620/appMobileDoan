@@ -89,9 +89,9 @@ class _DiviceState extends State<DiviceScreen> {
                     },
                     onDetect: (p0) {
                       if (controller.MaSV.isNotEmpty &&
-                          controller.istest.value == true) {
+                          controller.isCheckin.value == true) {
                         controller.image = p0.image;
-                        Future.delayed(Duration(milliseconds: 100), () {
+                        Future.delayed(Duration(milliseconds: 800), () {
                           DeviceModel model = DeviceModel(
                               time: controller.time.value,
                               name: controller.TenSV.value,
@@ -104,8 +104,9 @@ class _DiviceState extends State<DiviceScreen> {
                               .where((device) => device.title != null)
                               .toSet()
                               .toList();
+                          controller.isCheckin.value = false;
                         });
-                        controller.istest.value = false;
+                        
                       }
                     },
                     controller: MobileScannerController(
@@ -122,7 +123,7 @@ class _DiviceState extends State<DiviceScreen> {
                 child: Obx(() => ListView.builder(
                       itemCount: controller.uniqueDevices.length,
                       itemBuilder: (context, index) {
-                        List<DeviceModel> reversedList = controller.uniqueDevices.toList().reversed.toList();
+                        // List<DeviceModel> reversedList = controller.uniqueDevices.toList().reversed.toList();
                         return Container(
                           height: 100,
                           margin: EdgeInsets.all(10),
@@ -174,7 +175,7 @@ class _DiviceState extends State<DiviceScreen> {
                                           '${controller.uniqueDevices.value[index].title}')),
                                       Obx(
                                         () => Text(
-                                            '${controller.uniqueDevices.value[index].time!.substring(0,20)}'),
+                                            '${controller.uniqueDevices.value[index].time}'),
                                       )
                                     ],
                                   ))
