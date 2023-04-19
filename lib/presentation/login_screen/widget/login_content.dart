@@ -206,23 +206,6 @@ class _LoginContentState extends State<LoginContent> {
                                           BorderRadius.circular(8.0)))),
                         ),
                          const SizedBox(height: 10),
-                         FadeAnimation(
-                            delay: 1,
-                            child: GestureDetector(
-                              onTap: (() {
-                                Get.dialog(
-                                  Dialog(
-                                    child: ForgotPasswordScreen(),
-                                  )
-                                );
-                              }),
-                              child: Text("Quên mật khẩu?",
-                                  style: TextStyle(
-                                    color: darkTextColor,
-                                    letterSpacing: 0.5,
-                                  )),
-                            ),
-                          ),
                       ],
                     ),
                   ),

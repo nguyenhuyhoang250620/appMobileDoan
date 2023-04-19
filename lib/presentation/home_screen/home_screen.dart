@@ -57,6 +57,19 @@ class HomeScreen extends GetWidget<HomeController> {
                       IconButton(
                         onPressed: () {
                           controller.CheckInTeacher();
+                          Get.dialog(AlertDialog(
+                            content: Container(
+                              height: 100,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0)
+                              ),
+                              child: Center(child: Text("Điểm danh thành công")),
+                            ),
+                          ));
+                          Future.delayed(const Duration(seconds: 2), () {
+                              Get.back();
+                          });
                         }, 
                         icon: Icon(Icons.check_circle_outline_outlined),
                         iconSize: 30,

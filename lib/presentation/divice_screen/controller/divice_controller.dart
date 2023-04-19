@@ -86,8 +86,8 @@ class DiviceController extends GetxController {
   Future<void> listenToDocumentChanges(String doc) async {
     await firestoreInstance
         .collection("Config")
-        .where('MaGV', isEqualTo: 'phan_van_tien')
-        .where('mahocphan.MaHocPhan', isEqualTo: 'an_ninh_mang')
+        .where('MaGV', isEqualTo: MaGV.value)
+        .where('mahocphan.MaHocPhan', isEqualTo: MaHocPhan.value)
         .snapshots()
         .listen((QuerySnapshot querySnapshot) async {
       if (querySnapshot.docs.isNotEmpty) {
